@@ -72,6 +72,9 @@ async def __notify_flag(flag:bool):
     else:
         colo_notify = False
         await bot.say('Flag is turned off')
+        
+    time_stamp = tu.time_now()
+    print (time_stamp + " DEV Flag update: colo_notify = " + str(colo_notify))
 
 @bot.command(description='Backup variables to json', hidden=True)
 async def __backup():
@@ -84,6 +87,8 @@ async def __backup():
         f.write(dump)
         f.close()
 
+    time_stamp = tu.time_now()
+    print (time_stamp + " DEV Backup Performed")
     await bot.say('Backup complete')
 
 #########################################################################################
@@ -421,6 +426,46 @@ async def wow(ctx):
 @emote.command(pass_context=True)
 async def angry(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/ChatStamp020s.png')
+
+@emote.command(pass_context=True)
+async def noo(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp021s.png')
+
+@emote.command(pass_context=True)
+async def peace(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp022s.png')
+
+@emote.command(pass_context=True)
+async def forgetthat(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp023s.png')
+
+@emote.command(pass_context=True)
+async def sorry(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp024s.png')
+
+@emote.command(pass_context=True)
+async def teehee(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp025s.png')
+
+@emote.command(pass_context=True)
+async def guessso(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp026s.png')
+
+@emote.command(pass_context=True)
+async def thatsit(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp027s.png')
+
+@emote.command(pass_context=True)
+async def wut(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp028s.png')
+
+@emote.command(pass_context=True)
+async def cmi(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp029s.png')
+
+@emote.command(pass_context=True)
+async def trolol(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp030s.png')
 
 #########################################################################################
 #Database
