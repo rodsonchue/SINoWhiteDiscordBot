@@ -199,7 +199,7 @@ async def on_ready():
     await fafnirtask()
     await dailyexptask()
     await completedailytask()
-    #await pingtabstask()
+    await pingtabstask()
     
     print('All Scheduled Notifications Queued')
 
@@ -237,9 +237,9 @@ async def joined(member : discord.Member):
 
 #########################################################################################
 #Jisho module
-@bot.command(pass_context=True, description='Consult the jisho.org dictionary')
+@bot.command(pass_context=True, description='*Only shows the top result to avoid cluttering the chat too much')
 async def jisho(ctx, *, query : str):
-    """Only shows the top result to avoid cluttering the chat too much"""
+    """Consult the jisho.org dictionary"""
     result = await js.j2e(query)
     result_limit = 1
 
@@ -307,8 +307,11 @@ async def jisho(ctx, *, query : str):
 
 #########################################################################################
 #Event-specific
-@bot.command(pass_context=False, description='Find out when the next event window opens')
+@bot.command(pass_context=False)
 async def exp():
+    """
+    Find out when the next event window opens
+    """
     global tracker
     hours, minutes = tracker.nextEventTime('exp')
     if hours > 0:
@@ -318,18 +321,27 @@ async def exp():
 
 #########################################################################################
 #Dice rolling
-@bot.command(description='Generates M random integers in the range 1 to N')
+@bot.command()
 async def roll(N=10, M=1):
+    """
+    Generates M random integers in the range 1 to N
+    """
     result = ', '.join(str(random.randint(1, N)) for r in range(M))
     await bot.say('Roll result: ' + result)
 
-@bot.command(description='Generates M random integers in the range 0 to N')
+@bot.command()
 async def rollz(N=10, M=1):
+    """
+    Generates M random integers in the range 0 to N
+    """
     result = ', '.join(str(random.randint(0, N)) for r in range(M))
     await bot.say('Roll result: ' + result)
 
-@bot.command(pass_context=True, description='Generates a random permutation of the inputs')
+@bot.command(pass_context=True)
 async def randp(ctx, *names : str):
+    """
+    Generates a random permutation of the inputs
+    """
     permutation_result = permutation(len(names))
     reply = 'Result:'
     for i in range(len(names)):
@@ -339,10 +351,10 @@ async def randp(ctx, *names : str):
 
 #########################################################################################
 #Emotes
-@bot.group(pass_context=True, description='Use Emotes')
+@bot.group(pass_context=True, description='See emote options by invoking the help command')
 async def emote(ctx):
     """
-    See emote options by invoking the help command
+    Use Emotes
     """
     if ctx.invoked_subcommand is None:
         await bot.say('**' + command_prefix + 'help emote** for options')
