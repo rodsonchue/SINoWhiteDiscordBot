@@ -376,7 +376,7 @@ async def hardcarry(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/ChatStamp007s.png')
 
 @emote.command(pass_context=True)
-async def cute(ctx):
+async def yandere(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/ChatStamp008s.png')
 
 @emote.command(pass_context=True)
