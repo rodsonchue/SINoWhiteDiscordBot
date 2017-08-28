@@ -127,7 +127,8 @@ async def pingtabsmsg():
     if colo_notify:
         await notifymsg(lobby_channel, '<@253362110975836160> It\'s colo time <:blobhyperthink:347369958302547968>', 'pingtabsmsg()', delete=False, useEmbed=False)
     else:
-        print ('pingtabsmsg() not fired because colo_notify flag is turned off')
+        time_stamp = tu.time_now()
+        print (time_stamp + ' INFO ' +'pingtabsmsg() not fired because colo_notify flag is turned off')
 
 async def pingtabstask():
     task = dt.DailyTask(pingtabsmsg, 'Ping tabs for colo', tu.TimeOfDay(13, 55))
