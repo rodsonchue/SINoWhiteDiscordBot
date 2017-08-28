@@ -1,1 +1,1 @@
-web: python SINoWhite.py
+worker: python SINoWhite.py
