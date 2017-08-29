@@ -342,20 +342,18 @@ async def raid(ctx):
     if ctx.invoked_subcommand is None:
         await bot.say('**' + command_prefix + 'help raid** for options')
 
-@raid.command(pass_context=True)
-async def fafnir(ctx):
-    title = 'Fafnir Time Slots'
+def raid_message(title, raidName, func_name, image_url=None):
     msg = ''
 
-    if tracker.hasEvent('fafnir'):
-        eventTimes = tracker.getEvent('fafnir')
+    if tracker.hasEvent(raidName):
+        eventTimes = tracker.getEvent(raidName)
         
         for eventTime in eventTimes:
-            msg += '\n\t' + eventTime.toJST()
+            msg += '\n' + eventTime.toJST()
 
-        msg += '\n'
+        msg += '\n\n'
 
-        hours, minutes = tracker.nextEventTime('fafnir')
+        hours, minutes = tracker.nextEventTime(raidName)
         if hours > 0:
             msg += str(hours)+' hrs and '+str(minutes) +'mins till start of next window'
         else:
@@ -364,9 +362,16 @@ async def fafnir(ctx):
         embed_msg = discord.Embed()
         embed_msg.title = title
         embed_msg.description = msg
+        if image_url is not None:
+            embed_msg.set_image(image_url)
         await bot.send_message(ctx.message.channel, embed=embed_msg)
     else:
-        await notify_msg(ctx.message.channel, "Sorry, an error has occured.", delete=True, useEmbed=True)
+        await notifymsg(ctx.message.channel, "Sorry, an error has occured.", func_name, delete=True, useEmbed=True)
+    
+
+@raid.command(pass_context=True)
+async def fafnir(ctx):
+    raid_message('Fafnir Time Slots', 'fafnir', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
 
 
 
