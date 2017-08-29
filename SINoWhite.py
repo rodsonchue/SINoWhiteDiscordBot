@@ -344,7 +344,7 @@ async def fafnir(ctx):
         eventTimes = tracker.getEvent('fafnir')
         
         for eventTime in eventTimes:
-            msg += '\n\t' + eventTime.toJST()
+            msg += '\n\t' + eventTime.toJST(ctx)
 
         msg += '\n'
 
