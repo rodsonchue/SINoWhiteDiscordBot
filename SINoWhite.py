@@ -212,12 +212,20 @@ async def on_ready():
     
     global tracker
     tracker = et.EventTracker()
-    eventlist = [tu.TimeOfDay(16, 0),\
+    eventlist_exp = [tu.TimeOfDay(16, 0),\
                  tu.TimeOfDay(22, 30),\
                  tu.TimeOfDay(3, 0),\
                  tu.TimeOfDay(10, 30),\
                  tu.TimeOfDay(13, 30)]
-    tracker.addEvent('exp', eventlist)
+    tracker.addEvent('exp', eventlist_exp)
+    
+    eventlist_fafnir = [tu.TimeOfDay(16, 30),\
+                 tu.TimeOfDay(23, 30),\
+                 tu.TimeOfDay(3, 0),\
+                 tu.TimeOfDay(11, 30),\
+                 tu.TimeOfDay(14, 30)]
+    tracker.addEvent('fafnir', eventlist_fafnir)
+    
 
     print('Tracker ready')
     print('------')
@@ -340,16 +348,18 @@ async def fafnir(ctx):
 
         msg += '\n'
 
-    hours, minutes = tracker.nextEventTime('fafnir')
-    if hours > 0:
-        msg += str(hours)+' hrs and '+str(minutes) +'mins till start of next window'
-    else:
-        msg +=str(minutes) +'mins till start of next window'
+        hours, minutes = tracker.nextEventTime('fafnir')
+        if hours > 0:
+            msg += str(hours)+' hrs and '+str(minutes) +'mins till start of next window'
+        else:
+            msg +=str(minutes) +'mins till start of next window'
 
-    embed_msg = discord.Embed()
-    embed_msg.title = title
-    embed_msg.description = msg
-    await bot.send_message(ctx.message.channel, embed=embed_msg)
+        embed_msg = discord.Embed()
+        embed_msg.title = title
+        embed_msg.description = msg
+        await bot.send_message(ctx.message.channel, embed=embed_msg)
+    else:
+        await notify_msg(ctx.message.channel, "Sorry, an error has occured.", delete=True, useEmbed=True)
 
 
 
