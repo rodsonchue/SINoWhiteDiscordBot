@@ -9,6 +9,7 @@ import jisho as js
 import EventTracker as et
 import json
 from numpy.random import permutation
+from shutil import copyfile
 
 ##############
 #Bot Config filepath
@@ -92,6 +93,18 @@ async def __backup():
     time_stamp = tu.time_now()
     print (time_stamp + " DEV Backup Performed")
     await bot.say('Backup complete')
+
+@bot.command(description='Use backup json for next bootup', hidden=True)
+async def __useBackup():
+    copyfile(config_filepath+'.bak', config_filepath)
+    sent_msg =  await bot.say('Using backup for next bootup')
+    time_stamp = tu.time_now()
+    print (time_stamp + " DEV Overwrite config with backup " + msg)
+
+    #Delete msg after 5s
+    await asyncio.sleep(5)
+    await bot.delete_message(sent_msg)
+    
 
 #########################################################################################
 #Notifications module
