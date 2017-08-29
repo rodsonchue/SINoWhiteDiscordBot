@@ -20,6 +20,7 @@ token = ''
 command_prefix = ''
 colo_notify = True
 description = 'SINoWhite bot for TeaParty'
+trackedEvents = {}
 ##############
 
 ##############
@@ -82,7 +83,8 @@ async def __backup():
                          'command_prefix':command_prefix,
                          'bot_test_channel':bot_test_channel,
                          'lobby_channel':lobby_channel,
-                         'colo_notify':colo_notify})
+                         'colo_notify':colo_notify,
+                       'trackedEvents':trackedEvents})
     with open(config_filepath + '.bak', 'w') as f:
         f.write(dump)
         f.close()
@@ -218,6 +220,8 @@ async def on_ready():
                  tu.TimeOfDay(10, 30),\
                  tu.TimeOfDay(13, 30)]
     tracker.addEvent('exp', eventlist_exp)
+
+    trackedEvents['exp'] = eventlist_exp
     
     eventlist_fafnir = [tu.TimeOfDay(16, 30),\
                  tu.TimeOfDay(23, 30),\
@@ -225,6 +229,8 @@ async def on_ready():
                  tu.TimeOfDay(11, 30),\
                  tu.TimeOfDay(14, 30)]
     tracker.addEvent('fafnir', eventlist_fafnir)
+
+    trackedEvents['fafnir'] = eventlist_fafnir
     
 
     print('Tracker ready')
