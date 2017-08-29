@@ -363,7 +363,7 @@ async def raid_message(title, raidName, func_name, image_url=None):
         embed_msg.title = title
         embed_msg.description = msg
         if image_url is not None:
-            embed_msg.set_image(image_url)
+            embed_msg.set_image(url=image_url)
         await bot.send_message(ctx.message.channel, embed=embed_msg)
     else:
         await notifymsg(ctx.message.channel, "Sorry, an error has occured.", func_name, delete=True, useEmbed=True)
