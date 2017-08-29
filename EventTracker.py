@@ -10,6 +10,9 @@ class EventTracker:
     def hasEvent(self, eventName):
         return eventName in self.eventList
 
+    def getEvent(self, eventName):
+        return self.eventList[eventName]
+
     def nextEventTime(self, eventName):
         refTime = time.gmtime()
         currTime = TimeOfDay(refTime.tm_hour, refTime.tm_min)

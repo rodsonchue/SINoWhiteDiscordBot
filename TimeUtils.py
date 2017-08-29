@@ -20,3 +20,6 @@ class TimeOfDay:
         if hr < 0:
             hr = hr + 24
         return hr, minute
+
+    def toJST():
+        return str((hours+9)%24) + ':' + str(minutes) + ' JST'

@@ -313,12 +313,45 @@ async def exp():
     """
     Find out when the next event window opens
     """
-    global tracker
     hours, minutes = tracker.nextEventTime('exp')
     if hours > 0:
         await bot.say(str(hours)+' hrs and '+str(minutes) +'mins till start of next exp window')
     else:
         await bot.say(str(minutes) +'mins till start of next exp window')
+
+@bot.group(pass_context=True, description='Available options: fafnir, midgard, ogre')
+async def raid(ctx):
+    """
+    Check Raid timings
+    """
+    if ctx.invoked_subcommand is None:
+        await bot.say('**' + command_prefix + 'help raid** for options')
+
+@raid.command(pass_context=True)
+async def fafnir(ctx):
+    title = 'Fafnir Time Slots'
+    msg = ''
+
+    if tracker.hasEvent('fafnir'):
+        eventTimes = tracker.getEvent('fafnir')
+        
+        for eventTime in eventTimes:
+            msg += '\n\t' + eventTime.toJST()
+
+        msg += '\n'
+
+    hours, minutes = tracker.nextEventTime('fafnir')
+    if hours > 0:
+        msg += str(hours)+' hrs and '+str(minutes) +'mins till start of next window'
+    else:
+        msg +=str(minutes) +'mins till start of next window'
+
+    embed_msg = discord.Embed()
+    embed_msg.title = title
+    embed_msg.description = msg
+    await bot.send_message(ctx.message.channel, embed=embed_msg)
+
+
 
 #########################################################################################
 #Dice rolling
