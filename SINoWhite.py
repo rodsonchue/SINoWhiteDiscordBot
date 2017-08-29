@@ -342,10 +342,6 @@ async def raid(ctx):
     if ctx.invoked_subcommand is None:
         await bot.say('**' + command_prefix + 'help raid** for options')
 
-def getTimeInJST(eventTime):
-    """Just a convenience function to avoid the ctx wrapper"""
-    return eventTime.toJST()
-
 @raid.command(pass_context=True)
 async def fafnir(ctx):
     title = 'Fafnir Time Slots'
@@ -355,7 +351,7 @@ async def fafnir(ctx):
         eventTimes = tracker.getEvent('fafnir')
         
         for eventTime in eventTimes:
-            msg += '\n\t' + getTimeInJST(eventTime)
+            msg += '\n\t' + eventTime.toJST()
 
         msg += '\n'
 
