@@ -330,9 +330,9 @@ async def exp():
     """
     hours, minutes = tracker.nextEventTime('exp')
     if hours > 0:
-        await bot.say(str(hours)+' hrs and '+str(minutes) +'mins till start of next exp window')
+        await bot.say(str(hours)+' hrs and '+str(minutes) +' mins till start of next exp window')
     else:
-        await bot.say(str(minutes) +'mins till start of next exp window')
+        await bot.say(str(minutes) +' mins till start of next exp window')
 
 @bot.group(pass_context=True, description='Available options: fafnir, midgard, ogre')
 async def raid(ctx):
@@ -355,7 +355,7 @@ async def raid_message(ctx, title, raidName, func_name, image_url=None):
 
         hours, minutes = tracker.nextEventTime(raidName)
         if hours > 0:
-            msg += str(hours)+' hrs and '+str(minutes) +'mins till start of next window'
+            msg += str(hours)+' hrs and '+str(minutes) +' mins till start of next window'
         else:
             msg +=str(minutes) +'mins till start of next window'
 
