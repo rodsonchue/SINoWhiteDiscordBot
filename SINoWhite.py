@@ -342,7 +342,7 @@ async def raid(ctx):
     if ctx.invoked_subcommand is None:
         await bot.say('**' + command_prefix + 'help raid** for options')
 
-def raid_message(title, raidName, func_name, image_url=None):
+async def raid_message(title, raidName, func_name, image_url=None):
     msg = ''
 
     if tracker.hasEvent(raidName):
@@ -371,7 +371,7 @@ def raid_message(title, raidName, func_name, image_url=None):
 
 @raid.command(pass_context=True)
 async def fafnir(ctx):
-    raid_message('Fafnir Time Slots', 'fafnir', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
+    await raid_message('Fafnir Time Slots', 'fafnir', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
 
 
 
