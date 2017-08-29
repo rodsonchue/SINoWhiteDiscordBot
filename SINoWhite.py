@@ -63,7 +63,7 @@ with open(config_filepath, 'r') as f:
         trackedEvents = config['trackedEvents']
         print ('trackedEvents:', trackedEvents)
     else:
-        print ('Warning: trackedEvents field missing from config!")
+        print ('Warning: trackedEvents field missing from config!')
         
     print('------')
 
