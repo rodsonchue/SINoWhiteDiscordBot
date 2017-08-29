@@ -58,6 +58,13 @@ with open(config_filepath, 'r') as f:
     print ('bot_test_channel:', bot_test_channel)
     lobby_channel = config['lobby_channel']
     print ('lobby_channel:', lobby_channel)
+    
+    if 'trackedEvents' in config:
+        trackedEvents = config['trackedEvents']
+        print ('trackedEvents:', trackedEvents)
+    else:
+        print ('Warning: trackedEvents field missing from config!")
+        
     print('------')
 
 bot = commands.Bot(command_prefix=command_prefix, description=description)
