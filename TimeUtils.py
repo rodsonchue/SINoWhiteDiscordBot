@@ -22,4 +22,4 @@ class TimeOfDay:
         return hr, minute
 
     def toJST(self):
-        return str((hours+9)%24) + ':' + str(minutes) + ' JST'
+        return str((self.hours+9)%24) + ':' + str(self.minutes) + ' JST'
