@@ -234,21 +234,28 @@ async def on_ready():
 #General
 @bot.command(description='Can\'t decide on something? Let me decide for you.')
 async def choose(*choices : str):
-    """Choose between multiple choices."""
+    """
+    Choose between multiple choices
+    """
     if len(choices) > 1:
         await bot.say(":thinking: how about "+ random.choice(choices) + " ?")
     else:
         await bot.say("?")
 
-@bot.command(description='Find out when a member joined the server.')
+@bot.command()
 async def joined(member : discord.Member):
+    """
+    Find out when a member joined the server
+    """
     await bot.say('{0.name} joined on {0.joined_at}'.format(member))
 
 #########################################################################################
 #Jisho module
 @bot.command(pass_context=True, description='*Only shows the top result to avoid cluttering the chat too much')
 async def jisho(ctx, *, query : str):
-    """Consult the jisho.org dictionary"""
+    """
+    Consult the jisho.org dictionary
+    """
     result = await js.j2e(query)
     result_limit = 1
 
@@ -335,6 +342,10 @@ async def raid(ctx):
     if ctx.invoked_subcommand is None:
         await bot.say('**' + command_prefix + 'help raid** for options')
 
+def getTimeInJST(ctx, eventTime):
+    """Just a convenience function to avoid the ctx wrapper"""
+    return eventTime.toJST()
+
 @raid.command(pass_context=True)
 async def fafnir(ctx):
     title = 'Fafnir Time Slots'
@@ -344,7 +355,7 @@ async def fafnir(ctx):
         eventTimes = tracker.getEvent('fafnir')
         
         for eventTime in eventTimes:
-            msg += '\n\t' + eventTime.toJST(ctx)
+            msg += '\n\t' + getTimeInJST(eventTime)
 
         msg += '\n'
 
