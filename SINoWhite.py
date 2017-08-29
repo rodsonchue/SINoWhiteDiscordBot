@@ -342,7 +342,7 @@ async def raid(ctx):
     if ctx.invoked_subcommand is None:
         await bot.say('**' + command_prefix + 'help raid** for options')
 
-def getTimeInJST(ctx, eventTime):
+def getTimeInJST(eventTime):
     """Just a convenience function to avoid the ctx wrapper"""
     return eventTime.toJST()
 
