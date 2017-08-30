@@ -1,6 +1,7 @@
 import asyncio
 import time
 from TimeUtils import TimeOfDay
+from TimeUtils import subtract
 from operator import attrgetter
 
 class EventTracker:
@@ -29,11 +30,11 @@ class EventTracker:
                     hasChosen = True
 
         if hasChosen:
-            return (nextTime.hours - currTime.hours), (nextTime.minutes - currTime.minutes)
+            return subtract(nextTime, currTime)
         else:
             #Next time is tomorrow
             nextTime = event[0]
-            return (nextTime.hours - currTime.hours), (nextTime.minutes - currTime.minutes)
+            return subtract(nextTime, currTime)
 
     def addEvent(self, eventName, event):
         """
