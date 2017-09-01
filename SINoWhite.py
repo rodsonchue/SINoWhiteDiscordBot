@@ -60,8 +60,14 @@ with open(config_filepath, 'r') as f:
     print ('lobby_channel:', lobby_channel)
     
     if 'trackedEvents' in config:
-        trackedEvents = config['trackedEvents']
-        print ('trackedEvents:', trackedEvents)
+        for eventName, timeLst in config['trackedEvents'].items():
+            eventTimeLst = []
+            for hr, mins in timeLst:
+                eventTimeLst.append(tu.TimeOfDay(hr, mins))
+                
+            trackedEvents[eventName] = eventTimeLst
+        
+        print ('trackedEvents: ' + ', '.join('{}'.format(key) for key in trackedEvents.keys()))
     else:
         print ('Warning: trackedEvents field missing from config!')
         
@@ -93,7 +99,7 @@ async def __backup():
                          'bot_test_channel':bot_test_channel,
                          'lobby_channel':lobby_channel,
                          'colo_notify':colo_notify,
-                       'trackedEvents':trackedEvents})
+                       'trackedEvents':trackedEvents}, cls=tu.TodEncoder)
     
     with open(config_filepath + '.bak', 'w') as f:
         f.write(dump)
@@ -108,7 +114,7 @@ async def __useBackup():
     copyfile(config_filepath+'.bak', config_filepath)
     sent_msg =  await bot.say('Using backup for next bootup')
     time_stamp = tu.time_now()
-    print (time_stamp + " DEV Overwrite config with backup " + msg)
+    print (time_stamp + " DEV Overwrite config with backup ")
 
     #Delete msg after 5s
     await asyncio.sleep(5)
@@ -264,7 +270,7 @@ async def on_ready():
                  tu.TimeOfDay(13, 30)]
     tracker.addEvent('exp', eventlist_exp)
 
-    trackedEvents['exp'] = eventlist_exp
+    #trackedEvents['exp'] = eventlist_exp
     
     eventlist_fafnir = [tu.TimeOfDay(16, 30),\
                  tu.TimeOfDay(23, 30),\
@@ -273,7 +279,7 @@ async def on_ready():
                  tu.TimeOfDay(14, 30)]
     tracker.addEvent('fafnir', eventlist_fafnir)
 
-    trackedEvents['fafnir'] = eventlist_fafnir
+    #trackedEvents['fafnir'] = eventlist_fafnir
 
     eventlist_fenrir = [tu.TimeOfDay(16, 30),\
                  tu.TimeOfDay(23, 30),\
@@ -282,7 +288,7 @@ async def on_ready():
                  tu.TimeOfDay(14, 30)]
     tracker.addEvent('fenrir', eventlist_fenrir)
 
-    trackedEvents['fenrir'] = eventlist_fenrir
+    #trackedEvents['fenrir'] = eventlist_fenrir
 
     
     ##########################################
