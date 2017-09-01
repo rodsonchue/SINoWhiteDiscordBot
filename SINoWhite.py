@@ -22,6 +22,7 @@ command_prefix = ''
 colo_notify = True
 description = 'SINoWhite bot for TeaParty'
 trackedEvents = {}
+locked_roles = []
 ##############
 
 ##############
@@ -70,6 +71,13 @@ with open(config_filepath, 'r') as f:
         print ('trackedEvents: ' + ', '.join('{}'.format(key) for key in trackedEvents.keys()))
     else:
         print ('Warning: trackedEvents field missing from config!')
+
+
+    if 'locked_roles' in config:
+        locked_roles = config['locked_roles']
+        print ('locked_roles: ' + ', '.join('{}'.format(role) for role in locked_roles))
+    else:
+        print ('Warning: no locked_roles set')
         
     print('------')
 
@@ -99,7 +107,8 @@ async def __backup():
                          'bot_test_channel':bot_test_channel,
                          'lobby_channel':lobby_channel,
                          'colo_notify':colo_notify,
-                       'trackedEvents':trackedEvents}, cls=tu.TodEncoder)
+                       'trackedEvents':trackedEvents,
+                       'locked_roles':locked_roles}, cls=tu.TodEncoder)
     
     with open(config_filepath + '.bak', 'w') as f:
         f.write(dump)
@@ -315,6 +324,68 @@ async def joined(member : discord.Member):
     Find out when a member joined the server
     """
     await bot.say('{0.name} joined on {0.joined_at}'.format(member))
+
+async def findRoleInServer(ctx, role_name):
+    roles = ctx.message.server.roles
+
+    skip = True
+    for role in roles:
+        if skip:
+            skip = False
+        elif role_name.lower() == role.name.lower():
+            return role
+    return None
+
+@bot.command(pass_context=True)
+async def addrole(ctx, *role_name : str):
+    """
+    Add a role to yourself
+    """
+    role = await findRoleInServer(ctx, ' '.join(role_name))
+
+    if role is None:
+        await bot.say ("Role not found.")
+    elif role in ctx.message.author.roles:
+        await bot.say ("You already have the role.")
+    else:
+        try:
+            await bot.add_roles(ctx.message.author, role)
+            await bot.say("Role added!")
+        except discord.Forbidden:
+            await bot.say("I do not have permisssion to add that role.")
+
+@bot.command(pass_context=True)
+async def removerole(ctx, *role_name : str):
+    """
+    Add a role to yourself
+    """
+    role = findRoleInServer(ctx, ' '.join(role_name))
+
+    if role is None:
+        await bot.say ("Role not found.")
+    elif role not in ctx.message.author.roles:
+        await bot.say ("You don't have this role.")
+    else:
+        try:
+            await bot.remove_roles(ctx.message.author, role)
+            await bot.say("Role removed.")
+        except discord.Forbidden:
+            await bot.say("I do not have permisssion to remove that role.")
+
+@bot.command(pass_context=True)
+async def rolelist(ctx):
+    roles = ctx.message.server.roles
+
+    role_names = []
+    skip = True
+    for role in roles:
+        if skip:
+            skip = False
+        else:
+            role_names.append(role.name)
+
+    await bot.say("Roles: " + ', '.join(role_names))
+            
 
 #########################################################################################
 #Jisho module
