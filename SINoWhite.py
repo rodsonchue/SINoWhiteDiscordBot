@@ -209,19 +209,19 @@ async def fenrirmsg():
 
 async def fenrirtask():
     #1:30 JST
-    task = dt.DailyTask(fafnirmsg, "fenrirmsg() 1:30 JST", tu.TimeOfDay(16, 30))
+    task = dt.DailyTask(fenrirmsg, "fenrirmsg() 1:30 JST", tu.TimeOfDay(16, 30))
     await task.start()
     #8:30 JST
-    task = dt.DailyTask(fafnirmsg, "fenrirmsg() 8:30 JST", tu.TimeOfDay(23, 30))
+    task = dt.DailyTask(fenrirmsg, "fenrirmsg() 8:30 JST", tu.TimeOfDay(23, 30))
     await task.start()
     #12:00 JST
-    task = dt.DailyTask(fafnirmsg, "fenrirmsg() 12:00 JST", tu.TimeOfDay(3, 0))
+    task = dt.DailyTask(fenrirmsg, "fenrirmsg() 12:00 JST", tu.TimeOfDay(3, 0))
     await task.start()
     #20:30 JST
-    task = dt.DailyTask(fafnirmsg, "fenrirmsg() 20:30 JST", tu.TimeOfDay(11, 30))
+    task = dt.DailyTask(fenrirmsg, "fenrirmsg() 20:30 JST", tu.TimeOfDay(11, 30))
     await task.start()
     #23:30 JST
-    task = dt.DailyTask(fafnirmsg, "fenrirmsg() 23:30 JST", tu.TimeOfDay(14, 30))
+    task = dt.DailyTask(fenrirmsg, "fenrirmsg() 23:30 JST", tu.TimeOfDay(14, 30))
     await task.start()
 
 async def completedailymsg():
