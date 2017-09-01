@@ -87,18 +87,23 @@ async def __notify_flag(flag:bool):
 
 @bot.command(description='Backup variables to json', hidden=True)
 async def __backup():
+    trackedEventDumps = {}
+    for event in trackedEvents:
+        
+    
     dump = json.dumps({'token':token,
                          'command_prefix':command_prefix,
                          'bot_test_channel':bot_test_channel,
                          'lobby_channel':lobby_channel,
                          'colo_notify':colo_notify,
                        'trackedEvents':trackedEvents})
+    
     with open(config_filepath + '.bak', 'w') as f:
         f.write(dump)
         f.close()
 
     time_stamp = tu.time_now()
-    print (time_stamp + " DEV Backup Performed")
+    print (time_stamp + " DEV Backup Performed\nDump:", dump)
     await bot.say('Backup complete')
 
 @bot.command(description='Use backup json for next bootup', hidden=True)
@@ -196,6 +201,26 @@ async def fafnirtask():
     task = dt.DailyTask(fafnirmsg, "fafnirmsg() 23:30 JST", tu.TimeOfDay(14, 30))
     await task.start()
 
+async def fenrirmsg():
+    await notifymsg(lobby_channel, 'Fenrir Dungeon is up!', 'fenrirmsg()')
+
+async def fenrirtask():
+    #1:30 JST
+    task = dt.DailyTask(fafnirmsg, "fenrirmsg() 1:30 JST", tu.TimeOfDay(16, 30))
+    await task.start()
+    #8:30 JST
+    task = dt.DailyTask(fafnirmsg, "fenrirmsg() 8:30 JST", tu.TimeOfDay(23, 30))
+    await task.start()
+    #12:00 JST
+    task = dt.DailyTask(fafnirmsg, "fenrirmsg() 12:00 JST", tu.TimeOfDay(3, 0))
+    await task.start()
+    #20:30 JST
+    task = dt.DailyTask(fafnirmsg, "fenrirmsg() 20:30 JST", tu.TimeOfDay(11, 30))
+    await task.start()
+    #23:30 JST
+    task = dt.DailyTask(fafnirmsg, "fenrirmsg() 23:30 JST", tu.TimeOfDay(14, 30))
+    await task.start()
+
 async def completedailymsg():
     await notifymsg(lobby_channel, 'Remember to complete your daily missions!', 'completedailymsg()')
 
@@ -220,6 +245,7 @@ async def on_ready():
 
     #Active
     #await fafnirtask()
+    await fenrirtask()
     await dailyexptask()
     await completedailytask()
     await pingtabstask()
@@ -251,6 +277,18 @@ async def on_ready():
     tracker.addEvent('fafnir', eventlist_fafnir)
 
     trackedEvents['fafnir'] = eventlist_fafnir
+
+    eventlist_fenrir = [tu.TimeOfDay(16, 30),\
+                 tu.TimeOfDay(23, 30),\
+                 tu.TimeOfDay(3, 0),\
+                 tu.TimeOfDay(11, 30),\
+                 tu.TimeOfDay(14, 30)]
+    tracker.addEvent('fenrir', eventlist_fenrir)
+
+    trackedEvents['fenrir'] = eventlist_fenrir
+
+    
+    ##########################################
     
 
     print('Tracker ready')
