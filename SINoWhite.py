@@ -87,9 +87,6 @@ async def __notify_flag(flag:bool):
 
 @bot.command(description='Backup variables to json', hidden=True)
 async def __backup():
-    trackedEventDumps = {}
-    for event in trackedEvents:
-        
     
     dump = json.dumps({'token':token,
                          'command_prefix':command_prefix,

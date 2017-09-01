@@ -1,5 +1,6 @@
 import asyncio
 import time
+import json
 from contextlib import suppress
 
 def time_now():
@@ -26,3 +27,14 @@ class TimeOfDay:
         if self.minutes < 10: string += '0'
         string += ' JST'
         return string
+
+#Encodes TimeOfDay into JSON
+class TodEncoder(json.JSONEncoder):
+ 
+     def default(self, o):
+ 
+         if isinstance(o, TimeOfDay):
+ 
+             return {'__TimeOfDay__': [o.hours, o.minutes]}
+ 
+         return {'__{}__'.format(o.__class__.__name__): o.__dict__}
