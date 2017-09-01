@@ -441,6 +441,11 @@ async def fafnir(ctx):
     await raid_message(ctx, 'Fafnir Time Slots', 'fafnir', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
 
 
+@raid.command(pass_context=True)
+async def fenrir(ctx):
+    await raid_message(ctx, 'Fenrir Time Slots', 'fenrir', 'fenrir()', 'https://sinoalice.wiki/images/d/d7/The_Nightmare_that_Haunts_the_Hills.jpg')
+
+
 
 #########################################################################################
 #Dice rolling
