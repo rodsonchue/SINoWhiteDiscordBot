@@ -560,7 +560,7 @@ async def emote(ctx):
 
 @emote.command(pass_context=True)
 async def thanks(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp001s.png')
+    await bot.send_file(ctx.message.channel, 'emotes/en/chatstamp001_es.png')
 
 @emote.command(pass_context=True)
 async def unavoidable(ctx):
@@ -592,7 +592,7 @@ async def yandere(ctx):
 
 @emote.command(pass_context=True)
 async def ok(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp009s.png')
+    await bot.send_file(ctx.message.channel, 'emotes/en/chatstamp009_es.png')
 
 @emote.command(pass_context=True)
 async def wants(ctx):
@@ -677,6 +677,46 @@ async def cmi(ctx):
 @emote.command(pass_context=True)
 async def trolol(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/ChatStamp030s.png')
+
+@emote.command(pass_context=True)
+async def cheerup(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp031s.png')
+
+@emote.command(pass_context=True)
+async def helpme(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp032s.png')
+
+@emote.command(pass_context=True)
+async def congrats(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp033s.png')
+
+@emote.command(pass_context=True)
+async def goodluck(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp034s.png')
+
+@emote.command(pass_context=True)
+async def pout(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp035s.png')
+
+@emote.command(pass_context=True)
+async def creepyhello(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp036s.png')
+
+@emote.command(pass_context=True)
+async def byebye(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp037s.png')
+
+@emote.command(pass_context=True)
+async def approve(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp038s.png')
+
+@emote.command(pass_context=True)
+async def pleasehelp(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp039s.png')
+
+@emote.command(pass_context=True)
+async def brb(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp040s.png')
 
 #########################################################################################
 #Database
