@@ -44,7 +44,7 @@ class Danbooru():
         ratingWord  = "unknown"
         search      = "http://danbooru.donmai.us/posts.json?tags="
         tagSearch   = ""
-        verbose     = False
+        verbose     = True
 
         # Assign tags to URL
         if tags:
@@ -69,9 +69,14 @@ class Danbooru():
             if website != []:
                 if "success" not in website:
                     for index in range(len(website)): # Goes through each result until it finds one that works
+                        imageURL = None
+                        # Sets the image URL
                         if "file_url" in website[index]:
-                            # Sets the image URL
                             imageURL = "https://danbooru.donmai.us{}".format(website[index].get('file_url'))
+                        elif "source" in website[index]:
+                            imageURL = website[index].get('source')
+                            
+                        if imageURL is not None:
                             if verbose:
                                 # Fetches the image ID
                                 imageId = website[index].get('id')
@@ -117,13 +122,14 @@ class Danbooru():
                                 elif artists:
                                     output.add_field(name="Artists", value=artists)
                                 output.add_field(name="Tags", value=tagList, inline=False)
-                                output.set_thumbnail(url=imageURL)
+                                output.set_image(url=imageURL)
 
                                 # Edits the pending message with the results
                                 return await self.bot.edit_message(message, "Image found.", embed=output)
                             else:
                                 # Edits the pending message with the result
                                 return await self.bot.edit_message(message, imageURL)
+                                              
                     return await self.bot.edit_message(message, "Cannot find an image that can be viewed by you.")
                 else:
                     # Edits the pending message with an error received by the server
