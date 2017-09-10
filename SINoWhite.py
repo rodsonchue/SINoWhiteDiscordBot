@@ -12,6 +12,11 @@ from numpy.random import permutation
 from shutil import copyfile
 
 ##############
+# Cogs
+import Danbooru
+cogs = ["Danbooru"]
+
+##############
 #Bot Config filepath
 config_filepath = 'config.json'
 
@@ -43,8 +48,10 @@ sql_db = "sinowhite"
 ##############
 
 #########################################################################################
-#Boot up procedure for bot
+#Boot up procedure for bot (Before login)
+
 config = None
+
 with open(config_filepath, 'r') as f:
     config = json.load(f)
     print('------')
@@ -78,11 +85,21 @@ with open(config_filepath, 'r') as f:
         print ('locked_roles: ' + ', '.join('{}'.format(role) for role in locked_roles))
     else:
         print ('Warning: no locked_roles set')
-        
-    print('------')
 
 bot = commands.Bot(command_prefix=command_prefix, description=description)
 tracker = None
+
+print('------')
+print ('Loading cogs')
+for cog in cogs:
+    try:
+        bot.load_extension(cog)
+        print ("\t" + cog + " cog loaded")
+    except Exception as e:
+        exc = '{}: {}'.format(type(e).__name__, e)
+        print('Failed to load extension {}\n{}'.format(cog, exc))
+
+print('------')
 
 #########################################################################################
 #Dev-only commands (hidden)
@@ -242,7 +259,7 @@ async def completedailytask():
     await task.start()
 
 #########################################################################################
-
+#Bot warm up procedure
 @bot.event
 async def on_ready():
     print(tu.time_now() + ' Logged in as')
