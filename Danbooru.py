@@ -14,7 +14,7 @@ class Danbooru():
         """Retrieves the latest result from Danbooru (safe images only)"""
         if len(text) > 0:
             text += ("rating:safe",)
-            await self.fetch_image(ctx, randomize=False, tags=text)
+            await self.fetch_image(ctx, randomize=True, tags=text)
         else:
             await self.bot.say(usage_string)
 
@@ -22,7 +22,7 @@ class Danbooru():
     async def danbooru(self, ctx, *text):
         """Retrieves the latest result from Danbooru (Warning: may include NSFW images!)"""
         if len(text) > 0:
-            await self.fetch_image(ctx, randomize=False, tags=text)
+            await self.fetch_image(ctx, randomize=True, tags=text)
         else:
             await self.bot.say(usage_string)
             
