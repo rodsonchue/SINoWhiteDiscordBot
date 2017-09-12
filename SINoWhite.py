@@ -252,7 +252,7 @@ async def fenrirtask():
 
 async def completedailymsg():
     await notifymsg(lobby_channel, 'Remember to claim your daily cleaning ticket!', 'completedailymsg()', delete=False, useEmbed=True)
-    await bot.send_file(lobby_channel, 'others/DailyCleaningTicket.png')
+    await bot.send_file(lobby_channel, 'other/DailyCleaningTicket.png')
 
 async def completedailytask():
     task = dt.DailyTask(completedailymsg, "completedailymsg() 23:40 JST", tu.TimeOfDay(14, 40))
