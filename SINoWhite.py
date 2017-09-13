@@ -250,6 +250,26 @@ async def fenrirtask():
     task = dt.DailyTask(fenrirmsg, "fenrirmsg() 23:30 JST", tu.TimeOfDay(14, 30))
     await task.start()
 
+async def ogremsg():
+    await notifymsg(lobby_channel, 'Ogre Dungeon is up!', 'ogremsg()')
+
+async def ogretask():
+    #1:30 JST
+    task = dt.DailyTask(fenrirmsg, "ogremsg() 1:30 JST", tu.TimeOfDay(16, 30))
+    await task.start()
+    #8:30 JST
+    task = dt.DailyTask(fenrirmsg, "ogremsg() 8:30 JST", tu.TimeOfDay(23, 30))
+    await task.start()
+    #12:00 JST
+    task = dt.DailyTask(fenrirmsg, "ogremsg() 12:00 JST", tu.TimeOfDay(3, 0))
+    await task.start()
+    #20:30 JST
+    task = dt.DailyTask(fenrirmsg, "ogremsg() 20:30 JST", tu.TimeOfDay(11, 30))
+    await task.start()
+    #23:30 JST
+    task = dt.DailyTask(fenrirmsg, "ogremsg() 23:30 JST", tu.TimeOfDay(14, 30))
+    await task.start()
+
 async def completedailymsg():
     await notifymsg(lobby_channel, 'Remember to claim your daily cleaning ticket!', 'completedailymsg()', delete=False, useEmbed=True)
     await bot.send_file(lobby_channel, 'other/DailyCleaningTicket.png')
@@ -275,53 +295,13 @@ async def on_ready():
 
     #Active
     #await fafnirtask()
-    await fenrirtask()
+    #await fenrirtask()
+    await ogretask()
     await dailyexptask()
     await completedailytask()
     await pingtabstask()
     
     print('All Scheduled Notifications Queued')
-
-    #######################
-    #Tracker module
-    #######################
-
-    print('Seting up Tracker...')
-    
-    global tracker
-    tracker = et.EventTracker()
-    eventlist_exp = [tu.TimeOfDay(16, 0),\
-                 tu.TimeOfDay(22, 30),\
-                 tu.TimeOfDay(3, 0),\
-                 tu.TimeOfDay(10, 30),\
-                 tu.TimeOfDay(13, 30)]
-    tracker.addEvent('exp', eventlist_exp)
-
-    #trackedEvents['exp'] = eventlist_exp
-    
-    eventlist_fafnir = [tu.TimeOfDay(16, 30),\
-                 tu.TimeOfDay(23, 30),\
-                 tu.TimeOfDay(3, 0),\
-                 tu.TimeOfDay(11, 30),\
-                 tu.TimeOfDay(14, 30)]
-    tracker.addEvent('fafnir', eventlist_fafnir)
-
-    #trackedEvents['fafnir'] = eventlist_fafnir
-
-    eventlist_fenrir = [tu.TimeOfDay(16, 30),\
-                 tu.TimeOfDay(23, 30),\
-                 tu.TimeOfDay(3, 0),\
-                 tu.TimeOfDay(11, 30),\
-                 tu.TimeOfDay(14, 30)]
-    tracker.addEvent('fenrir', eventlist_fenrir)
-
-    #trackedEvents['fenrir'] = eventlist_fenrir
-
-    
-    ##########################################
-    
-
-    print('Tracker ready')
     print('------')
 
 #########################################################################################
@@ -534,6 +514,9 @@ async def fafnir(ctx):
 async def fenrir(ctx):
     await raid_message(ctx, 'Fenrir Time Slots', 'fenrir', 'fenrir()', 'https://sinoalice.wiki/images/d/d7/The_Nightmare_that_Haunts_the_Hills.jpg')
 
+@raid.command(pass_context=True)
+async def ogre(ctx):
+    await raid_message(ctx, 'Ogre Time Slots', 'ogre', 'ogre()', 'https://sinoalice.wiki/images/2/2f/The_Nightmare_that_Haunts_the_Forests.png')
 
 
 #########################################################################################

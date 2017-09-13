@@ -5,9 +5,10 @@ import aiohttp
 
 #Danbooru search
 class Danbooru():
-    usage_string = "Usage: danbooru[s] <query>"
+    
     def __init__(self, bot):
         self.bot = bot
+        self.usage_string = "Usage: danbooru[s] <query>"
 
     @commands.command(pass_context=True,no_pm=True)
     async def danboorus(self, ctx, *text):
@@ -24,7 +25,7 @@ class Danbooru():
         if len(text) > 0:
             await self.fetch_image(ctx, randomize=True, tags=text)
         else:
-            await self.bot.say(usage_string)
+            await self.bot.say(self.usage_string)
             
     async def fetch_image(self, ctx, randomize : bool=False, tags : list=[]):
         """
