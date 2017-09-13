@@ -87,9 +87,8 @@ with open(config_filepath, 'r') as f:
         print ('Warning: no locked_roles set')
 
 bot = commands.Bot(command_prefix=command_prefix, description=description)
-tracker = None
-
 print('------')
+
 print ('Loading cogs')
 for cog in cogs:
     try:
@@ -98,7 +97,15 @@ for cog in cogs:
     except Exception as e:
         exc = '{}: {}'.format(type(e).__name__, e)
         print('Failed to load extension {}\n{}'.format(cog, exc))
+print('------')
 
+############################
+#For tracker module
+print('Seting up Tracker...')
+tracker = et.EventTracker()
+for eventName, eventTimeLst in trackedEvents.items():
+    tracker.addEvent(eventName, eventTimeLst);
+print('Tracker ready')
 print('------')
 
 #########################################################################################
