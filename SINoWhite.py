@@ -287,29 +287,35 @@ async def completedailytask():
 
 #########################################################################################
 #Bot warm up procedure
+firstBoot = True
+    
 @bot.event
 async def on_ready():
+    print('------')
     print(tu.time_now() + ' Logged in as')
     print('Username: ' + bot.user.name)
     print('Bot Id: ' + bot.user.id)
     print('------')
 
-    #######################
-    #Notifications go here
-    #######################
+    if firstBoot:
+        #######################
+        #Notifications go here
+        #######################
 
-    print('Seting up Scheduled Notifications...')
+        print('Seting up Scheduled Notifications...')
 
-    #Active
-    #await fafnirtask()
-    #await fenrirtask()
-    await ogretask()
-    await dailyexptask()
-    await completedailytask()
-    await pingtabstask()
-    
-    print('All Scheduled Notifications Queued')
-    print('------')
+        #Active
+        #await fafnirtask()
+        #await fenrirtask()
+        await ogretask()
+        await dailyexptask()
+        await completedailytask()
+        await pingtabstask()
+        
+        print('All Scheduled Notifications Queued')
+        print('------')
+        
+        firstBoot = False
 
 #########################################################################################
 #General
