@@ -368,7 +368,7 @@ async def addrole(ctx, *role_name : str):
 @bot.command(pass_context=True)
 async def removerole(ctx, *role_name : str):
     """
-    Add a role to yourself
+    Remove a role from yourself
     """
     role = findRoleInServer(ctx, ' '.join(role_name))
 
@@ -385,6 +385,9 @@ async def removerole(ctx, *role_name : str):
 
 @bot.command(pass_context=True)
 async def rolelist(ctx):
+    """
+    Lists all the roles
+    """
     roles = ctx.message.server.roles
 
     role_names = []
