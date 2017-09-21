@@ -297,6 +297,7 @@ async def on_ready():
     print('Bot Id: ' + bot.user.id)
     print('------')
 
+    global firstBoot
     if firstBoot:
         #######################
         #Notifications go here
@@ -313,6 +314,7 @@ async def on_ready():
         await pingtabstask()
         
         print('All Scheduled Notifications Queued')
+
         print('------')
         
         firstBoot = False
