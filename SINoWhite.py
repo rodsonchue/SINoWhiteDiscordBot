@@ -218,7 +218,7 @@ async def dailyexptask():
     await task.start()
 
 async def fafnirmsg():
-    await notifymsg(lobby_channel, 'Fafnir Dungeon is up!', 'fafnirmsg()')
+    await notifymsg(lobby_channel, 'Fafnir Raid is up!', 'fafnirmsg()')
 
 async def fafnirtask():
     #1:30 JST
@@ -238,7 +238,7 @@ async def fafnirtask():
     await task.start()
 
 async def fenrirmsg():
-    await notifymsg(lobby_channel, 'Fenrir Dungeon is up!', 'fenrirmsg()')
+    await notifymsg(lobby_channel, 'Fenrir Raid is up!', 'fenrirmsg()')
 
 async def fenrirtask():
     #1:30 JST
@@ -258,7 +258,7 @@ async def fenrirtask():
     await task.start()
 
 async def ogremsg():
-    await notifymsg(lobby_channel, 'Ogre Dungeon is up!', 'ogremsg()')
+    await notifymsg(lobby_channel, 'Ogre Raid is up!', 'ogremsg()')
 
 async def ogretask():
     #1:30 JST
@@ -275,6 +275,26 @@ async def ogretask():
     await task.start()
     #23:30 JST
     task = dt.DailyTask(ogremsg, "ogremsg() 23:30 JST", tu.TimeOfDay(14, 30))
+    await task.start()
+
+async def spidermsg():
+    await notifymsg(lobby_channel, 'Spider Raid is up!', 'spidermsg()')
+
+async def spidertask():
+    #1:30 JST
+    task = dt.DailyTask(spidermsg, "spidermsg() 1:30 JST", tu.TimeOfDay(16, 30))
+    await task.start()
+    #8:30 JST
+    task = dt.DailyTask(spidermsg, "spidermsg() 8:30 JST", tu.TimeOfDay(23, 30))
+    await task.start()
+    #12:00 JST
+    task = dt.DailyTask(spidermsg, "spidermsg() 12:00 JST", tu.TimeOfDay(3, 0))
+    await task.start()
+    #20:30 JST
+    task = dt.DailyTask(spidermsg, "spidermsg() 20:30 JST", tu.TimeOfDay(11, 30))
+    await task.start()
+    #23:30 JST
+    task = dt.DailyTask(spidermsg, "spidermsg() 23:30 JST", tu.TimeOfDay(14, 30))
     await task.start()
 
 async def completedailymsg():
@@ -308,7 +328,8 @@ async def on_ready():
         #Active
         #await fafnirtask()
         #await fenrirtask()
-        await ogretask()
+        #await ogretask()
+        await spidertask()
         await dailyexptask()
         await completedailytask()
         await pingtabstask()
@@ -488,7 +509,7 @@ async def exp():
     else:
         await bot.say(str(minutes) +' mins till start of next exp window')
 
-@bot.group(pass_context=True, description='Available options: fafnir, midgard, ogre')
+@bot.group(pass_context=True, description='Available options: fafnir, midgard, ogre, spider')
 async def raid(ctx):
     """
     Check Raid timings
@@ -527,7 +548,6 @@ async def raid_message(ctx, title, raidName, func_name, image_url=None):
 async def fafnir(ctx):
     await raid_message(ctx, 'Fafnir Time Slots', 'fafnir', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
 
-
 @raid.command(pass_context=True)
 async def fenrir(ctx):
     await raid_message(ctx, 'Fenrir Time Slots', 'fenrir', 'fenrir()', 'https://sinoalice.wiki/images/d/d7/The_Nightmare_that_Haunts_the_Hills.jpg')
@@ -535,6 +555,10 @@ async def fenrir(ctx):
 @raid.command(pass_context=True)
 async def ogre(ctx):
     await raid_message(ctx, 'Ogre Time Slots', 'ogre', 'ogre()', 'https://sinoalice.wiki/images/2/2f/The_Nightmare_that_Haunts_the_Forests.png')
+
+@raid.command(pass_context=True)
+async def spider(ctx):
+    await raid_message(ctx, 'Spider Time Slots', 'spider', 'spider()', 'https://pbs.twimg.com/media/DK4d6BQUMAAjdEc.jpg')
 
 
 #########################################################################################
