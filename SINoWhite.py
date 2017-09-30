@@ -515,7 +515,8 @@ async def raid(ctx):
     Check Raid timings
     """
     if ctx.invoked_subcommand is None:
-        await bot.say('**' + command_prefix + 'help raid** for options')
+        await raid_message(ctx, 'Spider Time Slots', 'spider', 'spider()', 'https://pbs.twimg.com/media/DK4d6BQUMAAjdEc.jpg')
+        #await bot.say('**' + command_prefix + 'help raid** for options')
 
 async def raid_message(ctx, title, raidName, func_name, image_url=None):
     msg = ''
@@ -559,7 +560,6 @@ async def ogre(ctx):
 @raid.command(pass_context=True)
 async def spider(ctx):
     await raid_message(ctx, 'Spider Time Slots', 'spider', 'spider()', 'https://pbs.twimg.com/media/DK4d6BQUMAAjdEc.jpg')
-
 
 #########################################################################################
 #Dice rolling
