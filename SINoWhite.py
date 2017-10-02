@@ -28,6 +28,8 @@ colo_notify = True
 description = 'SINoWhite bot for TeaParty'
 trackedEvents = {}
 locked_roles = []
+colo_join = {}
+colo_cached_names = {}
 ##############
 
 ##############
@@ -84,7 +86,13 @@ with open(config_filepath, 'r') as f:
         locked_roles = config['locked_roles']
         print ('locked_roles: ' + ', '.join('{}'.format(role) for role in locked_roles))
     else:
-        print ('Warning: no locked_roles set')
+        print ('Warning: No locked_roles set')
+
+    if 'colo_join' in config:
+        colo_join = config['colo_join']
+        print ('colo_join: ', colo_join)
+    else:
+        print ('Warning: No colo_join set')
 
 bot = commands.Bot(command_prefix=command_prefix, description=description)
 print('------')
@@ -123,8 +131,7 @@ async def __notify_flag(flag:bool):
     time_stamp = tu.time_now()
     print (time_stamp + " DEV Flag update: colo_notify = " + str(colo_notify))
 
-@bot.command(description='Backup variables to json', hidden=True)
-async def __backup():
+async def doBackup():
     
     dump = json.dumps({'token':token,
                          'command_prefix':command_prefix,
@@ -132,7 +139,8 @@ async def __backup():
                          'lobby_channel':lobby_channel,
                          'colo_notify':colo_notify,
                        'trackedEvents':trackedEvents,
-                       'locked_roles':locked_roles}, cls=tu.TodEncoder)
+                       'locked_roles':locked_roles,
+                       'colo_join':colo_join}, cls=tu.TodEncoder)
     
     with open(config_filepath + '.bak', 'w') as f:
         f.write(dump)
@@ -140,6 +148,10 @@ async def __backup():
 
     time_stamp = tu.time_now()
     print (time_stamp + " DEV Backup Performed\nDump:", dump)
+
+@bot.command(description='Backup variables to json', hidden=True)
+async def __backup():
+    await doBackup()
     await bot.say('Backup complete')
 
 @bot.command(description='Use backup json for next bootup', hidden=True)
@@ -152,6 +164,10 @@ async def __useBackup():
     #Delete msg after 5s
     await asyncio.sleep(5)
     await bot.delete_message(sent_msg)
+
+@bot.command(description='Clears the cache for user nicknames', hidden=True)
+async def __clearcache():
+    colo_cached_names.clear()
     
 
 #########################################################################################
@@ -301,6 +317,12 @@ async def completedailymsg():
     await notifymsg(lobby_channel, 'Remember to claim your daily cleaning ticket!', 'completedailymsg()', delete=False, useEmbed=True)
     await bot.send_file(lobby_channel, 'other/DailyCleaningTicket.png')
 
+    # Resets everyone's attendance for the next day, assume to be not participating
+    for userid in colo_join:
+        colo_join[userid] = False
+
+    await doBackup()
+
 async def completedailytask():
     task = dt.DailyTask(completedailymsg, "completedailymsg() 23:40 JST", tu.TimeOfDay(14, 40))
     await task.start()
@@ -422,7 +444,66 @@ async def rolelist(ctx):
             role_names.append(role.name)
 
     await bot.say("Roles: " + ', '.join(role_names))
-            
+
+@bot.command(pass_context=True)
+async def join(ctx):
+    """
+    Indicate that you are participating in the colossuem for the day
+    """
+    member = ctx.message.author
+    colo_join[member.id] = True
+    
+    await bot.say(member.name + " is joining us for colo today")
+
+@bot.command(pass_context=True)
+async def unjoin(ctx):
+    """
+    Indicate that you are participating in the colossuem for the day
+    """
+    member = ctx.message.author
+    colo_join[member.id] = False
+
+    alias = member.name
+    if member.nick is not None:
+        alias = member.nick
+    
+    await bot.say(alias + " is **not** joining us for colo today")
+
+@bot.command(pass_context=True)
+async def participating(ctx):
+    participants = []
+    nonParticipants = []
+    for userid, isParticipating in colo_join.items():
+        alias = None
+        if userid in colo_cached_names:
+            alias = colo_cached_names[userid]
+        else:
+            server = discord.utils.find(lambda s: s.id == '342171098168688640', bot.servers)
+            if server:
+                member = discord.utils.find(lambda m: m.id == userid, server.members)
+                if member:
+                    alias = member.name
+                    if member.nick is not None:
+                        alias = member.nick
+                else:
+                    print ('ERROR Member with id ' + member.id + ' not found in server')
+            else:
+                print ('ERROR Cannot find server with id 342171098168688640')
+
+            # Alternate search method, is slower but just incase the above fails
+            if alias is None:
+                member = await bot.get_user_info(userid)
+                alias = member.name
+
+            colo_cached_names[userid] = alias
+        
+        if isParticipating:
+            participants.append(alias)
+        else:
+            nonParticipants.append(alias)
+
+    await bot.say("Participating: " + str(len(participants)) + '\n\t' + ", ".join(participants) +'\n\n' + \
+                  "Not Participating: " + str(len(nonParticipants)) + '\n\t' + ", ".join(nonParticipants))
 
 #########################################################################################
 #Jisho module
