@@ -448,26 +448,44 @@ async def rolelist(ctx):
 @bot.command(pass_context=True)
 async def join(ctx):
     """
-    Indicate that you are participating in the colossuem for the day
+    Indicate that you are participating in the colosseum for the day
     """
-    member = ctx.message.author
-    colo_join[member.id] = True
+    userid = ctx.message.author.id
     
-    await bot.say(member.name + " is joining us for colo today")
+    server = discord.utils.find(lambda s: s.id == '342171098168688640', bot.servers)
+    if server:
+        member = discord.utils.find(lambda m: m.id == userid, server.members)
+        if member:
+            alias = member.name
+            if member.nick is not None:
+                alias = member.nick
+                
+            colo_join[userid] = True
+            await bot.say(alias + " is joining us for colo today")
+            return
+
+    await bot.say('An unknown error has occured.')
 
 @bot.command(pass_context=True)
 async def unjoin(ctx):
     """
-    Indicate that you are participating in the colossuem for the day
+    Indicate that you are not participating in the colosseum for the day
     """
-    member = ctx.message.author
-    colo_join[member.id] = False
-
-    alias = member.name
-    if member.nick is not None:
-        alias = member.nick
+    userid = ctx.message.author.id
     
-    await bot.say(alias + " is **not** joining us for colo today")
+    server = discord.utils.find(lambda s: s.id == '342171098168688640', bot.servers)
+    if server:
+        member = discord.utils.find(lambda m: m.id == userid, server.members)
+        if member:
+            alias = member.name
+            if member.nick is not None:
+                alias = member.nick
+                
+            colo_join[member.id] = False
+            await bot.say(alias + " is **not** joining us for colo today")
+            return
+
+    await bot.say('An unknown error has occured.')
 
 @bot.command(pass_context=True)
 async def participating(ctx):
