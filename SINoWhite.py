@@ -165,9 +165,39 @@ async def __useBackup():
     await asyncio.sleep(5)
     await bot.delete_message(sent_msg)
 
+async def reset_participation():
+    # Resets everyone's attendance, assume to be not participating
+    for userid in colo_join:
+        colo_join[userid] = False
+
+    time_stamp = tu.time_now()
+    print (time_stamp + " DEV Reset Colo Participation")
+
+    await doBackup()
+
+@bot.command(description='Resets all colo participation status', hidden=True)
+async def __resetcolo():
+    await reset_participation()
+
+    sent_msg =  await bot.say('Colo Participation Reset')
+    time_stamp = tu.time_now()
+
+    #Delete msg after 5s
+    await asyncio.sleep(5)
+    await bot.delete_message(sent_msg)
+    
+
 @bot.command(description='Clears the cache for user nicknames', hidden=True)
-async def __clearcache():
+async def __clearcachednames():
     colo_cached_names.clear()
+    
+    sent_msg =  await bot.say('Colo Cached Names cleared')
+    time_stamp = tu.time_now()
+    print (time_stamp + " DEV Cleared Colo Cache ")
+
+    #Delete msg after 5s
+    await asyncio.sleep(5)
+    await bot.delete_message(sent_msg)
     
 
 #########################################################################################
@@ -315,13 +345,8 @@ async def spidertask():
 
 async def completedailymsg():
     await notifymsg(lobby_channel, 'Remember to claim your daily cleaning ticket!', 'completedailymsg()', delete=False, useEmbed=True)
-
-    # Resets everyone's attendance for the next day, assume to be not participating
-    for userid in colo_join:
-        colo_join[userid] = False
-
-    await doBackup()
-
+    await reset_participation()
+    
 async def completedailytask():
     task = dt.DailyTask(completedailymsg, "completedailymsg() 23:40 JST", tu.TimeOfDay(14, 40))
     await task.start()
