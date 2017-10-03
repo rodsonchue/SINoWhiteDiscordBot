@@ -315,7 +315,6 @@ async def spidertask():
 
 async def completedailymsg():
     await notifymsg(lobby_channel, 'Remember to claim your daily cleaning ticket!', 'completedailymsg()', delete=False, useEmbed=True)
-    await bot.send_file(lobby_channel, 'other/DailyCleaningTicket.png')
 
     # Resets everyone's attendance for the next day, assume to be not participating
     for userid in colo_join:
