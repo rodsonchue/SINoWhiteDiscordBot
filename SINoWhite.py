@@ -151,7 +151,7 @@ async def doBackup():
     print (time_stamp + " DEV Backup Performed\nDump:", dump)
 
 async def useBackup():
-    if !os.path.isfile():
+    if not os.path.isfile():
         time_stamp = tu.time_now()
         print (time_stamp + " DEV No backup found!")
         await doBackup()
