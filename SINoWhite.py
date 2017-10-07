@@ -10,6 +10,7 @@ import EventTracker as et
 import json
 from numpy.random import permutation
 from shutil import copyfile
+import os.path
 
 ##############
 # Cogs
@@ -150,6 +151,11 @@ async def doBackup():
     print (time_stamp + " DEV Backup Performed\nDump:", dump)
 
 async def useBackup():
+    if !os.path.isfile():
+        time_stamp = tu.time_now()
+        print (time_stamp + " DEV No backup found!")
+        await doBackup()
+        
     copyfile(config_filepath+'.bak', config_filepath)
     time_stamp = tu.time_now()
     print (time_stamp + " DEV Overwrite config with backup ")
@@ -493,7 +499,9 @@ async def join(ctx):
                 
             colo_join[userid] = True
             await bot.say(alias + " is joining us for colo today")
-            print ("INFO User " + alias + " colo_join = True")
+            
+            time_stamp = tu.time_now()
+            print (time_stamp + "INFO User " + alias + " colo_join = True")
             return
 
     await bot.say('An unknown error has occured.')
@@ -515,15 +523,18 @@ async def unjoin(ctx):
                 
             colo_join[member.id] = False
             await bot.say(alias + " is **not** joining us for colo today")
-            print ("INFO User " + alias + " colo_join = False")
+            
+            time_stamp = tu.time_now()
+            print (time_stamp + "INFO User " + alias + " colo_join = False")
             return
 
     await bot.say('An unknown error has occured.')
 
 @bot.command(pass_context=True)
-async def participating(ctx):
+async def colo(ctx):
     participants = []
     nonParticipants = []
+    time_stamp = tu.time_now()
     for userid, isParticipating in colo_join.items():
         alias = None
         if userid in colo_cached_names:
@@ -537,9 +548,9 @@ async def participating(ctx):
                     if member.nick is not None:
                         alias = member.nick
                 else:
-                    print ('ERROR Member with id ' + member.id + ' not found in server')
+                    print (time_stamp + 'ERROR Member with id ' + member.id + ' not found in server')
             else:
-                print ('ERROR Cannot find server with id 342171098168688640')
+                print (time_stamp + 'ERROR Cannot find server with id 342171098168688640')
 
             # Alternate search method, is slower but just incase the above fails
             if alias is None:
