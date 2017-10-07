@@ -149,17 +149,24 @@ async def doBackup():
     time_stamp = tu.time_now()
     print (time_stamp + " DEV Backup Performed\nDump:", dump)
 
+async def useBackup():
+    copyfile(config_filepath+'.bak', config_filepath)
+    time_stamp = tu.time_now()
+    print (time_stamp + " DEV Overwrite config with backup ")
+
 @bot.command(description='Backup variables to json', hidden=True)
 async def __backup():
     await doBackup()
-    await bot.say('Backup complete')
+    sent_msg =  await bot.say('Backup complete')
+
+    #Delete msg after 5s
+    await asyncio.sleep(5)
+    await bot.delete_message(sent_msg)
 
 @bot.command(description='Use backup json for next bootup', hidden=True)
 async def __useBackup():
-    copyfile(config_filepath+'.bak', config_filepath)
+    await useBackup()
     sent_msg =  await bot.say('Using backup for next bootup')
-    time_stamp = tu.time_now()
-    print (time_stamp + " DEV Overwrite config with backup ")
 
     #Delete msg after 5s
     await asyncio.sleep(5)
@@ -486,6 +493,7 @@ async def join(ctx):
                 
             colo_join[userid] = True
             await bot.say(alias + " is joining us for colo today")
+            print ("INFO User " + alias + " colo_join = True")
             return
 
     await bot.say('An unknown error has occured.')
@@ -507,6 +515,7 @@ async def unjoin(ctx):
                 
             colo_join[member.id] = False
             await bot.say(alias + " is **not** joining us for colo today")
+            print ("INFO User " + alias + " colo_join = False")
             return
 
     await bot.say('An unknown error has occured.')
