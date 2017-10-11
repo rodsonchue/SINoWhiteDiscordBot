@@ -600,7 +600,8 @@ async def jisho(ctx, *, query : str):
         main_reading = japanese[0]
         if('word' in main_reading):
             text += '**'+main_reading['word']+'**'
-            text += ' ('+main_reading['reading']+')'
+            if('reading' in main_reading):
+                text += ' ('+main_reading['reading']+')'
         else:
             text += '**'+main_reading['reading']+'**'
             
@@ -736,7 +737,7 @@ async def randp(ctx, *names : str):
 
 #########################################################################################
 #Emotes
-@bot.group(pass_context=True, description='See emote options by invoking the help command')
+@bot.group(pass_context=True, description='See emote options by invoking the help command', aliases=['e','emo'])
 async def emote(ctx):
     """
     Use Emotes
@@ -788,7 +789,7 @@ async def wants(ctx):
 async def rekt(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/ChatStamp011s.png')
 
-@emote.command(pass_context=True)
+@emote.command(pass_context=True, aliases=['otsukare'])
 async def oatscurry(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/ChatStamp012s.png')
 
@@ -836,7 +837,7 @@ async def peace(ctx):
 async def forgetthat(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/ChatStamp023s.png')
 
-@emote.command(pass_context=True)
+@emote.command(pass_context=True, aliases=['sorrymasen','sumanai'])
 async def sorry(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/ChatStamp024s.png')
 
