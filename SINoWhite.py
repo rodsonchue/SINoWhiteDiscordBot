@@ -548,7 +548,7 @@ async def colo(ctx):
                     if member.nick is not None:
                         alias = member.nick
                 else:
-                    print (time_stamp + 'ERROR Member with id ' + member.id + ' not found in server')
+                    print (time_stamp + 'ERROR Member with id ' + userid + ' not found in server')
             else:
                 print (time_stamp + 'ERROR Cannot find server with id 342171098168688640')
 
