@@ -506,7 +506,7 @@ async def join(ctx):
 
     await bot.say('An unknown error has occured.')
 
-@bot.command(pass_context=True)
+@bot.command(pass_context=True, aliases=['cmi'])
 async def unjoin(ctx):
     """
     Indicate that you are not participating in the colosseum for the day
