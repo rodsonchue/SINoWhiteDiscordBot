@@ -12,7 +12,7 @@ class Danbooru():
 
     @commands.command(pass_context=True,no_pm=True)
     async def danboorus(self, ctx, *text):
-        """Retrieves the latest result from Danbooru (safe images only)"""
+        """Retrieves image results from Danbooru (safe images only)"""
         if len(text) > 0:
             text += ("rating:safe",)
             await self.fetch_image(ctx, randomize=True, tags=text)
@@ -21,11 +21,20 @@ class Danbooru():
 
     @commands.command(pass_context=True,no_pm=True)
     async def danbooru(self, ctx, *text):
-        """Retrieves the latest result from Danbooru (Warning: may include NSFW images!)"""
+        """Retrieves image results from Danbooru (Warning: may include NSFW images!)"""
         if len(text) > 0:
             await self.fetch_image(ctx, randomize=True, tags=text)
         else:
             await self.bot.say(self.usage_string)
+
+    @commands.command(pass_context=True,no_pm=True)
+    async def danbooruns(self, ctx, *text):
+        """Retrieves image results from Danbooru (NOT safe images only)"""
+        if len(text) > 0:
+            text += ("-rating:safe",)
+            await self.fetch_image(ctx, randomize=True, tags=text)
+        else:
+            await self.bot.say(usage_string)
             
     async def fetch_image(self, ctx, randomize : bool=False, tags : list=[]):
         """
