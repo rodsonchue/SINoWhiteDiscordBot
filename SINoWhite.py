@@ -674,7 +674,7 @@ async def exp():
     else:
         await bot.say(str(minutes) +' mins till start of next exp window')
 
-@bot.group(pass_context=True, description='Available options: fafnir, midgard, ogre, spider, midgard')
+@bot.group(pass_context=True, description='Available options: fafnir, fenrir, ogre, spider, midgard')
 async def raid(ctx):
     """
     Check Raid timings
