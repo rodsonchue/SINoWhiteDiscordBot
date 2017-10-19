@@ -356,6 +356,26 @@ async def spidertask():
     task = dt.DailyTask(spidermsg, "spidermsg() 23:30 JST", tu.TimeOfDay(14, 30))
     await task.start()
 
+async def midgardmsg():
+    await notifymsg(lobby_channel, 'Midgard Raid is up!', 'midgardmsg()')
+
+async def midgardtask():
+    #1:30 JST
+    task = dt.DailyTask(midgardmsg, "midgardmsg() 1:30 JST", tu.TimeOfDay(16, 30))
+    await task.start()
+    #8:30 JST
+    task = dt.DailyTask(midgardmsg, "midgardmsg() 8:30 JST", tu.TimeOfDay(23, 30))
+    await task.start()
+    #12:00 JST
+    task = dt.DailyTask(midgardmsg, "midgardmsg() 12:00 JST", tu.TimeOfDay(3, 0))
+    await task.start()
+    #20:30 JST
+    task = dt.DailyTask(midgardmsg, "midgardmsg() 20:30 JST", tu.TimeOfDay(11, 30))
+    await task.start()
+    #23:30 JST
+    task = dt.DailyTask(midgardmsg, "midgardmsg() 23:30 JST", tu.TimeOfDay(14, 30))
+    await task.start()
+
 async def completedailymsg():
     await notifymsg(lobby_channel, 'Remember to claim your daily cleaning ticket!', 'completedailymsg()', delete=False, useEmbed=True)
     await reset_participation()
@@ -388,7 +408,8 @@ async def on_ready():
         #await fafnirtask()
         #await fenrirtask()
         #await ogretask()
-        await spidertask()
+        #await spidertask()
+        await midgardtask()
         await dailyexptask()
         await completedailytask()
         await pingtabstask()
@@ -653,13 +674,13 @@ async def exp():
     else:
         await bot.say(str(minutes) +' mins till start of next exp window')
 
-@bot.group(pass_context=True, description='Available options: fafnir, midgard, ogre, spider')
+@bot.group(pass_context=True, description='Available options: fafnir, midgard, ogre, spider, midgard')
 async def raid(ctx):
     """
     Check Raid timings
     """
     if ctx.invoked_subcommand is None:
-        await raid_message(ctx, 'Spider Time Slots', 'spider', 'spider()', 'https://pbs.twimg.com/media/DK4d6BQUMAAjdEc.jpg')
+        await raid_message(ctx, 'Midgardsormr Time Slots', 'midgard', 'midgard()', 'https://sinoalice.wiki/images/1/14/BannerL020.png')
         #await bot.say('**' + command_prefix + 'help raid** for options')
 
 async def raid_message(ctx, title, raidName, func_name, image_url=None):
@@ -703,7 +724,11 @@ async def ogre(ctx):
 
 @raid.command(pass_context=True)
 async def spider(ctx):
-    await raid_message(ctx, 'Spider Time Slots', 'spider', 'spider()', 'https://pbs.twimg.com/media/DK4d6BQUMAAjdEc.jpg')
+    await raid_message(ctx, 'Spider Time Slots', 'spider', 'spider()', 'https://sinoalice.wiki/images/4/45/Twin_Fangs_of_Ptomaine_Poison.png')
+
+@raid.command(pass_context=True)
+async def midgard(ctx):
+    await raid_message(ctx, 'Midgardsormr Time Slots', 'midgard', 'midgard()', 'https://sinoalice.wiki/images/1/14/BannerL020.png')
 
 #########################################################################################
 #Dice rolling
