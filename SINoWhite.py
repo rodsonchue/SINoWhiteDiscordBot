@@ -905,6 +905,14 @@ async def pleasehelp(ctx):
 async def brb(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/ChatStamp040s.png')
 
+@emote.command(pass_context=True)
+async def f1(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/other/F1.png')
+
+@emote.command(pass_context=True)
+async def disgusting(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/other/disgusting.png')
+    
 #########################################################################################
 #Database
 #THERE IS NO DB FOR NOW
