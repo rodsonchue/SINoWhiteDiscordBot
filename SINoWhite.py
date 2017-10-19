@@ -707,7 +707,7 @@ async def raid_message(ctx, title, raidName, func_name, image_url=None):
             embed_msg.set_image(url=image_url)
         await bot.send_message(ctx.message.channel, embed=embed_msg)
     else:
-        await notifymsg(ctx.message.channel, "Sorry, an error has occured.", func_name, delete=True, useEmbed=True)
+        await notifymsg(ctx.message.channel.id, "Sorry, an error has occured.", func_name, delete=True, useEmbed=True)
     
 
 @raid.command(pass_context=True)
