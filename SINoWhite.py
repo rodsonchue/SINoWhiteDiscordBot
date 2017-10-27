@@ -181,7 +181,7 @@ async def reset_participation():
     conn = getDatabaseConn(database_url)
     cur = conn.cursor()
     cur.execute('UPDATE public.colo_status SET status = 0')
-    conn.close()
+    conn.commit()
     cur.close()
     conn.close()
 
