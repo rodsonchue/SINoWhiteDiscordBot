@@ -642,7 +642,6 @@ async def colo(ctx):
     await bot.say("Participating: " + str(len(participants)) + '\n\t' + ", ".join(participants) +'\n\n' +\
                   "Not Participating: " + str(len(nonParticipants)) + '\n\t' + ", ".join(nonParticipants) +'\n\n' +\
                   "No Indication: " + str(len(notIndicated)) + '\n\t' + ", ".join(notIndicated))
-    await bot.say("*P.S feature is still under testing*")
     return
 
 #########################################################################################
