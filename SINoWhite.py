@@ -11,6 +11,8 @@ import json
 from numpy.random import permutation
 from shutil import copyfile
 import os.path
+from urllib import parse
+import psycopg2
 
 ##############
 # Cogs
@@ -44,10 +46,7 @@ lobby_channel = ''
 ##############
 #SQL vars
 #Currently not in use
-sql_uri = "localhost"
-sql_user = "sinowhite"
-sql_pw = "etihwonis"
-sql_db = "sinowhite"
+database_url = None
 ##############
 
 #########################################################################################
@@ -94,6 +93,12 @@ with open(config_filepath, 'r') as f:
         print ('colo_join: ', colo_join)
     else:
         print ('Warning: No colo_join set')
+
+    if 'database_url' in config:
+        database_url = config['database_url']
+        print ('database_url: ', database_url)
+    else:
+        print ('Warning: No database_url set')
 
 bot = commands.Bot(command_prefix=command_prefix, description=description)
 print('------')
@@ -179,9 +184,15 @@ async def __useBackup():
     await bot.delete_message(sent_msg)
 
 async def reset_participation():
-    # Resets everyone's attendance, assume to be not participating
+    # Resets everyone's attendance, assume not indicated
     for userid in colo_join:
         colo_join[userid] = False
+
+    conn = getDatabaseConn(database_url)
+    cur = conn.cursor()
+    cur.execute('UPDATE public.colo_status SET status = 0')
+    cur.close()
+    conn.close()
 
     time_stamp = tu.time_now()
     print (time_stamp + " DEV Reset Colo Participation")
@@ -519,6 +530,23 @@ async def join(ctx):
                 alias = member.nick
                 
             colo_join[userid] = True
+
+            #test
+            conn = getDatabaseConn(database_url)
+            cur = conn.cursor()
+            cur.execute('SELECT COUNT(*) FROM public.colo_status WHERE userid = %s', (member.id,))
+            result = cur.fetchone()
+            if result[0] > 0:
+                #Existing entry
+                cur.execute('UPDATE public.colo_status SET status = %s WHERE userid = %s', (1, member.id))
+            else:
+                #Create new entry
+                cur.execute('INSERT INTO public.colo_status (status, userid) VALUES (%s, %s)', (1, member.id))
+
+            conn.commit()
+            cur.close()
+            conn.close()
+            
             await bot.say(alias + " is joining us for colo today")
             
             time_stamp = tu.time_now()
@@ -543,6 +571,23 @@ async def unjoin(ctx):
                 alias = member.nick
                 
             colo_join[member.id] = False
+
+            #test
+            conn = getDatabaseConn(database_url)
+            cur = conn.cursor()
+            cur.execute('SELECT COUNT(*) FROM public.colo_status WHERE userid = %s', (member.id,))
+            result = cur.fetchone()
+            if result[0] > 0:
+                #Existing entry
+                cur.execute('UPDATE public.colo_status SET status = %s WHERE userid = %s', (-1, member.id))
+            else:
+                #Create new entry
+                cur.execute('INSERT INTO public.colo_status (status, userid) VALUES (%s, %s)', (-1, member.id))
+
+            conn.commit()
+            cur.close()
+            conn.close()
+            
             await bot.say(alias + " is **not** joining us for colo today")
             
             time_stamp = tu.time_now()
@@ -551,42 +596,84 @@ async def unjoin(ctx):
 
     await bot.say('An unknown error has occured.')
 
+async def getAlias(userid):
+    time_stamp = tu.time_now()
+    alias = None
+    if userid in colo_cached_names:
+        alias = colo_cached_names[userid]
+    else:
+        server = discord.utils.find(lambda s: s.id == '342171098168688640', bot.servers)
+        if server:
+            member = discord.utils.find(lambda m: m.id == userid, server.members)
+            if member:
+                alias = member.name
+                if member.nick is not None:
+                    alias = member.nick
+            else:
+                print (time_stamp + 'ERROR Member with id ' + userid + ' not found in server')
+        else:
+            print (time_stamp + 'ERROR Cannot find server with id 342171098168688640')
+
+        # Alternate search method, is slower but just incase the above fails
+        if alias is None:
+            member = await bot.get_user_info(userid)
+            alias = member.name
+
+        colo_cached_names[userid] = alias
+
+    return alias
+
 @bot.command(pass_context=True)
 async def colo(ctx):
     participants = []
     nonParticipants = []
-    time_stamp = tu.time_now()
-    for userid, isParticipating in colo_join.items():
-        alias = None
-        if userid in colo_cached_names:
-            alias = colo_cached_names[userid]
-        else:
-            server = discord.utils.find(lambda s: s.id == '342171098168688640', bot.servers)
-            if server:
-                member = discord.utils.find(lambda m: m.id == userid, server.members)
-                if member:
-                    alias = member.name
-                    if member.nick is not None:
-                        alias = member.nick
-                else:
-                    print (time_stamp + 'ERROR Member with id ' + userid + ' not found in server')
-            else:
-                print (time_stamp + 'ERROR Cannot find server with id 342171098168688640')
+    notIndicated = []
 
-            # Alternate search method, is slower but just incase the above fails
-            if alias is None:
-                member = await bot.get_user_info(userid)
-                alias = member.name
-
-            colo_cached_names[userid] = alias
+    #test
+    conn = getDatabaseConn(database_url)
+    cur = conn.cursor()
+    
+    cur.execute('SELECT userid FROM public.colo_status WHERE status > 0')
+    result = cur.fetchall()
+    for userid in result:
+        alias = await getAlias(userid[0])
+        participants.append(alias)
         
-        if isParticipating:
-            participants.append(alias)
-        else:
-            nonParticipants.append(alias)
+    cur.execute('SELECT userid FROM public.colo_status WHERE status < 0')
+    result = cur.fetchall()
+    for userid in result:
+        alias = await getAlias(userid[0])
+        nonParticipants.append(alias)
 
-    await bot.say("Participating: " + str(len(participants)) + '\n\t' + ", ".join(participants) +'\n\n' + \
-                  "Not Participating: " + str(len(nonParticipants)) + '\n\t' + ", ".join(nonParticipants))
+    cur.execute('SELECT userid FROM public.colo_status WHERE status = 0')
+    result = cur.fetchall()
+    for userid in result:
+        alias = await getAlias(userid[0])
+        notIndicated.append(alias)
+
+    print(notIndicated)
+        
+    cur.close()
+    conn.close()
+
+    await bot.say("Participating: " + str(len(participants)) + '\n\t' + ", ".join(participants) +'\n\n' +\
+                  "Not Participating: " + str(len(nonParticipants)) + '\n\t' + ", ".join(nonParticipants) +'\n\n' +\
+                  "No Indication: " + str(len(notIndicated)) + '\n\t' + ", ".join(notIndicated))
+    await bot.say("*P.S feature is still under testing*")
+
+    #participants = []
+    #nonParticipants = []
+    
+    #for userid, isParticipating in colo_join.items():
+    #    alias = getAlias(userid)
+        
+    #    if isParticipating:
+    #        participants.append(alias)
+    #    else:
+    #        nonParticipants.append(alias)
+
+    #await bot.say("Participating: " + str(len(participants)) + '\n\t' + ", ".join(participants) +'\n\n' + \
+    #              "Not Participating: " + str(len(nonParticipants)) + '\n\t' + ", ".join(nonParticipants))
 
 #########################################################################################
 #Jisho module
@@ -939,15 +1026,18 @@ async def disgusting(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/other/disgusting.png')
     
 #########################################################################################
-#Database
-#THERE IS NO DB FOR NOW
-#@bot.command()
-#async def testdb():
-#    """Tests connection to the database"""
-#    db = mys.connect(host=sql_uri, user=sql_user, passwd=sql_pw, db=sql_db)
-#    if(db):
-#       await bot.say("Connection successful")
-#    else:
-#        await bot.say("Connection failed!")
+#Database helper function
+def getDatabaseConn(database_url):
+    parse.uses_netloc.append("postgres")
+    url = parse.urlparse(database_url)
+
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    return conn
 
 bot.run(token)
