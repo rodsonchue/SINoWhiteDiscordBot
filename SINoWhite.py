@@ -31,7 +31,6 @@ colo_notify = True
 description = 'SINoWhite bot for TeaParty'
 trackedEvents = {}
 locked_roles = []
-colo_join = {}
 colo_cached_names = {}
 ##############
 
@@ -45,7 +44,6 @@ lobby_channel = ''
 
 ##############
 #SQL vars
-#Currently not in use
 database_url = None
 ##############
 
@@ -87,12 +85,6 @@ with open(config_filepath, 'r') as f:
         print ('locked_roles: ' + ', '.join('{}'.format(role) for role in locked_roles))
     else:
         print ('Warning: No locked_roles set')
-
-    if 'colo_join' in config:
-        colo_join = config['colo_join']
-        print ('colo_join: ', colo_join)
-    else:
-        print ('Warning: No colo_join set')
 
     if 'database_url' in config:
         database_url = config['database_url']
@@ -146,7 +138,7 @@ async def doBackup():
                          'colo_notify':colo_notify,
                        'trackedEvents':trackedEvents,
                        'locked_roles':locked_roles,
-                       'colo_join':colo_join}, cls=tu.TodEncoder)
+                       'database_url':database_url}, cls=tu.TodEncoder)
     
     with open(config_filepath + '.bak', 'w') as f:
         f.write(dump)
@@ -185,8 +177,6 @@ async def __useBackup():
 
 async def reset_participation():
     # Resets everyone's attendance, assume not indicated
-    for userid in colo_join:
-        colo_join[userid] = False
 
     conn = getDatabaseConn(database_url)
     cur = conn.cursor()
@@ -529,10 +519,7 @@ async def join(ctx):
             alias = member.name
             if member.nick is not None:
                 alias = member.nick
-                
-            colo_join[userid] = True
 
-            #test
             conn = getDatabaseConn(database_url)
             cur = conn.cursor()
             cur.execute('SELECT COUNT(*) FROM public.colo_status WHERE userid = %s', (member.id,))
@@ -571,9 +558,6 @@ async def unjoin(ctx):
             if member.nick is not None:
                 alias = member.nick
                 
-            colo_join[member.id] = False
-
-            #test
             conn = getDatabaseConn(database_url)
             cur = conn.cursor()
             cur.execute('SELECT COUNT(*) FROM public.colo_status WHERE userid = %s', (member.id,))
@@ -651,8 +635,6 @@ async def colo(ctx):
     for userid in result:
         alias = await getAlias(userid[0])
         notIndicated.append(alias)
-
-    print(notIndicated)
         
     cur.close()
     conn.close()
@@ -661,20 +643,7 @@ async def colo(ctx):
                   "Not Participating: " + str(len(nonParticipants)) + '\n\t' + ", ".join(nonParticipants) +'\n\n' +\
                   "No Indication: " + str(len(notIndicated)) + '\n\t' + ", ".join(notIndicated))
     await bot.say("*P.S feature is still under testing*")
-
-    #participants = []
-    #nonParticipants = []
-    
-    #for userid, isParticipating in colo_join.items():
-    #    alias = getAlias(userid)
-        
-    #    if isParticipating:
-    #        participants.append(alias)
-    #    else:
-    #        nonParticipants.append(alias)
-
-    #await bot.say("Participating: " + str(len(participants)) + '\n\t' + ", ".join(participants) +'\n\n' + \
-    #              "Not Participating: " + str(len(nonParticipants)) + '\n\t' + ", ".join(nonParticipants))
+    return
 
 #########################################################################################
 #Jisho module
