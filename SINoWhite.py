@@ -411,7 +411,7 @@ async def on_ready():
         #await fenrirtask()
         #await ogretask()
         #await spidertask()
-        await midgardtask()
+        #await midgardtask()
         await dailyexptask()
         await completedailytask()
         await pingtabstask()
