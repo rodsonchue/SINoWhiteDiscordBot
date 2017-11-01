@@ -378,6 +378,26 @@ async def midgardtask():
     task = dt.DailyTask(midgardmsg, "midgardmsg() 23:30 JST", tu.TimeOfDay(14, 30))
     await task.start()
 
+async def zizmsg():
+    await notifymsg(lobby_channel, 'Ziz Raid is up!', 'zizmsg()')
+
+async def ziztask():
+    #1:30 JST
+    task = dt.DailyTask(zizmsg, "zizmsg() 1:30 JST", tu.TimeOfDay(16, 30))
+    await task.start()
+    #8:30 JST
+    task = dt.DailyTask(zizmsg, "zizmsg() 8:30 JST", tu.TimeOfDay(23, 30))
+    await task.start()
+    #12:00 JST
+    task = dt.DailyTask(zizmsg, "zizmsg() 12:00 JST", tu.TimeOfDay(3, 0))
+    await task.start()
+    #20:30 JST
+    task = dt.DailyTask(zizmsg, "zizmsg() 20:30 JST", tu.TimeOfDay(11, 30))
+    await task.start()
+    #23:30 JST
+    task = dt.DailyTask(zizmsg, "zizmsg() 23:30 JST", tu.TimeOfDay(14, 30))
+    await task.start()
+
 async def completedailymsg():
     await notifymsg(lobby_channel, 'Remember to claim your daily cleaning ticket!', 'completedailymsg()', delete=False, useEmbed=True)
     await reset_participation()
@@ -407,14 +427,17 @@ async def on_ready():
         print('Seting up Scheduled Notifications...')
 
         #Active
+        await ziztask()
+        await dailyexptask()
+        await completedailytask()
+        await pingtabstask()
+
+        #Inactive
         #await fafnirtask()
         #await fenrirtask()
         #await ogretask()
         #await spidertask()
         #await midgardtask()
-        await dailyexptask()
-        await completedailytask()
-        await pingtabstask()
         
         print('All Scheduled Notifications Queued')
 
@@ -730,13 +753,13 @@ async def exp():
     else:
         await bot.say(str(minutes) +' mins till start of next exp window')
 
-@bot.group(pass_context=True, description='Available options: fafnir, fenrir, ogre, spider, midgard')
+@bot.group(pass_context=True, description='Available options: fafnir, fenrir, ogre, spider, midgard, ziz')
 async def raid(ctx):
     """
     Check Raid timings
     """
     if ctx.invoked_subcommand is None:
-        await raid_message(ctx, 'Midgardsormr Time Slots', 'midgard', 'midgard()', 'https://sinoalice.wiki/images/1/14/BannerL020.png')
+        await raid_message(ctx, 'Ziz Time Slots', 'ziz', 'ziz()', 'https://cdn.discordapp.com/attachments/318376297963192321/374908884080656389/DNdKMRZVAAATbHk.jpg') #change to wiki link when its up
         #await bot.say('**' + command_prefix + 'help raid** for options')
 
 async def raid_message(ctx, title, raidName, func_name, image_url=None):
@@ -785,6 +808,10 @@ async def spider(ctx):
 @raid.command(pass_context=True)
 async def midgard(ctx):
     await raid_message(ctx, 'Midgardsormr Time Slots', 'midgard', 'midgard()', 'https://sinoalice.wiki/images/1/14/BannerL020.png')
+
+@raid.command(pass_context=True)
+async def ziz(ctx):
+    await raid_message(ctx, 'Ziz Time Slots', 'ziz', 'ziz()', 'https://cdn.discordapp.com/attachments/318376297963192321/374908884080656389/DNdKMRZVAAATbHk.jpg') #change to wiki link when its up
 
 #########################################################################################
 #Dice rolling
