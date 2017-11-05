@@ -25,7 +25,7 @@ config_filepath = 'config.json'
 
 ##############
 #Vars
-token = ''
+token = os.environ['SINOALICE_TOKEN']
 command_prefix = ''
 colo_notify = True
 description = 'SINoWhite bot for TeaParty'
@@ -44,7 +44,7 @@ lobby_channel = ''
 
 ##############
 #SQL vars
-database_url = None
+database_url = os.environ['DATABASE_URL']
 ##############
 
 #########################################################################################
@@ -56,8 +56,6 @@ with open(config_filepath, 'r') as f:
     config = json.load(f)
     print('------')
     print ('Loading config file...')
-    token = config['token']
-    print ('token:', token)
     command_prefix = config['command_prefix']
     print ('command_prefix:', command_prefix)
     colo_notify = config['colo_notify']
@@ -85,12 +83,6 @@ with open(config_filepath, 'r') as f:
         print ('locked_roles: ' + ', '.join('{}'.format(role) for role in locked_roles))
     else:
         print ('Warning: No locked_roles set')
-
-    if 'database_url' in config:
-        database_url = config['database_url']
-        print ('database_url: ', database_url)
-    else:
-        print ('Warning: No database_url set')
 
 bot = commands.Bot(command_prefix=command_prefix, description=description)
 print('------')
@@ -131,14 +123,12 @@ async def __notify_flag(flag:bool):
 
 async def doBackup():
     
-    dump = json.dumps({'token':token,
-                         'command_prefix':command_prefix,
-                         'bot_test_channel':bot_test_channel,
-                         'lobby_channel':lobby_channel,
-                         'colo_notify':colo_notify,
+    dump = json.dumps({'command_prefix':command_prefix,
+                       'bot_test_channel':bot_test_channel,
+                       'lobby_channel':lobby_channel,
+                       'colo_notify':colo_notify,
                        'trackedEvents':trackedEvents,
-                       'locked_roles':locked_roles,
-                       'database_url':database_url}, cls=tu.TodEncoder)
+                       'locked_roles':locked_roles}, cls=tu.TodEncoder)
     
     with open(config_filepath + '.bak', 'w') as f:
         f.write(dump)
