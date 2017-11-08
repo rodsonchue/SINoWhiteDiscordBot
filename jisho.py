@@ -2,6 +2,7 @@ import asyncio
 import aiohttp
 import async_timeout
 import json
+from yarl import URL
 
 class JishoResult:
     def __init__(self):
@@ -16,7 +17,8 @@ async def fetch(session, url):
 async def j2e(query):
     result = list()
     async with aiohttp.ClientSession() as session:
-        response = await fetch(session, 'http://jisho.org/api/v1/search/words?keyword='+query)
+        response = await fetch(session, str(URL('http://jisho.org/api/v1/search/words?keyword='+query)))
+        print (str(URL('http://jisho.org/api/v1/search/words?keyword='+query)))
         payload = json.loads(response)['data']
         for match in payload:
             jsresult = JishoResult()
