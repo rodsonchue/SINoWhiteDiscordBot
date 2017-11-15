@@ -417,12 +417,12 @@ async def on_ready():
         print('Seting up Scheduled Notifications...')
 
         #Active
-        await ziztask()
         await dailyexptask()
         await completedailytask()
         await pingtabstask()
 
         #Inactive
+        #await ziztask()
         #await fafnirtask()
         #await fenrirtask()
         #await ogretask()
