@@ -749,7 +749,7 @@ async def raid(ctx):
     Check Raid timings
     """
     if ctx.invoked_subcommand is None:
-        await raid_message(ctx, 'Ziz Time Slots', 'ziz', 'ziz()', 'https://cdn.discordapp.com/attachments/318376297963192321/374908884080656389/DNdKMRZVAAATbHk.jpg') #change to wiki link when its up
+        await raid_message(ctx, 'Fafnir/Midgard Time Slots', 'fafnir', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
         #await bot.say('**' + command_prefix + 'help raid** for options')
 
 async def raid_message(ctx, title, raidName, func_name, image_url=None):
