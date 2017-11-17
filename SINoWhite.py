@@ -418,6 +418,7 @@ async def on_ready():
 
         #Active
         await fafnirtask()
+        await midgardtask()
         await dailyexptask()
         await completedailytask()
         await pingtabstask()
@@ -427,7 +428,6 @@ async def on_ready():
         #await fenrirtask()
         #await ogretask()
         #await spidertask()
-        #await midgardtask()
         
         print('All Scheduled Notifications Queued')
 
