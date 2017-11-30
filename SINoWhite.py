@@ -417,13 +417,13 @@ async def on_ready():
         print('Seting up Scheduled Notifications...')
 
         #Active
-        await fafnirtask()
-        await midgardtask()
         await dailyexptask()
         await completedailytask()
         await pingtabstask()
 
         #Inactive
+        #await fafnirtask()
+        #await midgardtask()
         #await ziztask()
         #await fenrirtask()
         #await ogretask()
@@ -749,8 +749,9 @@ async def raid(ctx):
     Check Raid timings
     """
     if ctx.invoked_subcommand is None:
-        await raid_message(ctx, 'Fafnir/Midgard Time Slots', 'fafnir', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
+        #await raid_message(ctx, 'Fafnir/Midgard Time Slots', 'fafnir', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
         #await bot.say('**' + command_prefix + 'help raid** for options')
+        await bot.say('No Raids Active')
 
 async def raid_message(ctx, title, raidName, func_name, image_url=None):
     msg = ''
