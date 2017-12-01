@@ -826,7 +826,7 @@ async def ziz(ctx):
     await raid_message(ctx, 'Ziz Time Slots', 'ziz', 'ziz()', 'https://sinoalice.wiki/images/c/cd/Wing_of_Fate.jpg')
 
 @raid.command(pass_context=True)
-async def ziz(ctx):
+async def rafflesia(ctx):
     await raid_message(ctx, 'Rafflesia Time Slots', 'rafflesia', 'rafflesia()', 'https://sinoalice.wiki/images/8/8c/Baptism_of_Fantasies.jpg')
 
 #########################################################################################
