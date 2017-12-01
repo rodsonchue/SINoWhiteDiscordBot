@@ -388,6 +388,26 @@ async def ziztask():
     task = dt.DailyTask(zizmsg, "zizmsg() 23:30 JST", tu.TimeOfDay(14, 30))
     await task.start()
 
+async def rafflesiamsg():
+    await notifymsg(lobby_channel, 'Rafflesia Raid is up!', 'rafflesiamsg()')
+
+async def raidtask(name, msgFn):
+    #1:30 JST
+    task = dt.DailyTask(msgFn, name+"() 1:30 JST", tu.TimeOfDay(16, 30))
+    await task.start()
+    #8:30 JST
+    task = dt.DailyTask(msgFn, name+"() 8:30 JST", tu.TimeOfDay(23, 30))
+    await task.start()
+    #12:00 JST
+    task = dt.DailyTask(msgFn, name+"() 12:00 JST", tu.TimeOfDay(3, 0))
+    await task.start()
+    #20:30 JST
+    task = dt.DailyTask(msgFn, name+"() 20:30 JST", tu.TimeOfDay(11, 30))
+    await task.start()
+    #23:30 JST
+    task = dt.DailyTask(msgFn, name+"() 23:30 JST", tu.TimeOfDay(14, 30))
+    await task.start()
+
 async def completedailymsg():
     await notifymsg(lobby_channel, 'Remember to claim your daily cleaning ticket!', 'completedailymsg()', delete=False, useEmbed=True)
     await reset_participation()
@@ -422,6 +442,7 @@ async def on_ready():
         await pingtabstask()
 
         #Inactive
+        await raidtask("rafflesiamsg", rafflesiamsg)
         #await fafnirtask()
         #await midgardtask()
         #await ziztask()
@@ -749,9 +770,9 @@ async def raid(ctx):
     Check Raid timings
     """
     if ctx.invoked_subcommand is None:
-        #await raid_message(ctx, 'Fafnir/Midgard Time Slots', 'fafnir', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
+        await raid_message(ctx, 'Rafflesia Time Slots', 'rafflesia', 'rafflesia()', 'https://sinoalice.wiki/images/8/8c/Baptism_of_Fantasies.jpg')
         #await bot.say('**' + command_prefix + 'help raid** for options')
-        await bot.say('No Raids Active')
+        #await bot.say('No Raids Active')
 
 async def raid_message(ctx, title, raidName, func_name, image_url=None):
     msg = ''
@@ -802,7 +823,11 @@ async def midgard(ctx):
 
 @raid.command(pass_context=True)
 async def ziz(ctx):
-    await raid_message(ctx, 'Ziz Time Slots', 'ziz', 'ziz()', 'https://cdn.discordapp.com/attachments/318376297963192321/374908884080656389/DNdKMRZVAAATbHk.jpg') #change to wiki link when its up
+    await raid_message(ctx, 'Ziz Time Slots', 'ziz', 'ziz()', 'https://sinoalice.wiki/images/c/cd/Wing_of_Fate.jpg')
+
+@raid.command(pass_context=True)
+async def ziz(ctx):
+    await raid_message(ctx, 'Rafflesia Time Slots', 'rafflesia', 'rafflesia()', 'https://sinoalice.wiki/images/8/8c/Baptism_of_Fantasies.jpg')
 
 #########################################################################################
 #Dice rolling
