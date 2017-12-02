@@ -572,7 +572,7 @@ async def join(ctx):
             await bot.say(alias + " is joining us for colo today")
             
             time_stamp = tu.time_now()
-            print (time_stamp + "INFO User " + alias + " colo_join = True")
+            print (time_stamp + " INFO User " + alias + " colo_join = True")
             return
 
     await bot.say('An unknown error has occured.')
@@ -610,7 +610,7 @@ async def unjoin(ctx):
             await bot.say(alias + " is **not** joining us for colo today")
             
             time_stamp = tu.time_now()
-            print (time_stamp + "INFO User " + alias + " colo_join = False")
+            print (time_stamp + " INFO User " + alias + " colo_join = False")
             return
 
     await bot.say('An unknown error has occured.')
