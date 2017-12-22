@@ -665,7 +665,7 @@ async def raid(ctx):
     Check Raid timings
     """
     if ctx.invoked_subcommand is None:
-        await raid_message(ctx, 'Fish (for a lack of a better name) Time Slots', 'rafflesia', 'rafflesia()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
+        await raid_message(ctx, 'Nami Time Slots', 'standard_raid', 'nami()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
         #await bot.say('**' + command_prefix + 'help raid** for options')
         #await bot.say('No Raids Active')
 
@@ -725,8 +725,12 @@ async def rafflesia(ctx):
     await raid_message(ctx, 'Rafflesia Time Slots', 'rafflesia', 'rafflesia()', 'https://sinoalice.wiki/images/8/8c/Baptism_of_Fantasies.jpg')
 
 @raid.command(pass_context=True)
-async def fish(ctx):
-    await raid_message(ctx, 'Fish (for a lack of a better name) Time Slots', 'standard_raid', 'fish()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
+async def nami(ctx):
+    await raid_message(ctx, 'Nami Time Slots', 'standard_raid', 'nami()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
+
+@raid.command(pass_context=True)
+async def oyassan(ctx):
+    await raid_message(ctx, 'Oyassan Time Slots', 'standard_raid', 'oyassan()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
 
 #########################################################################################
 #Dice rolling
