@@ -271,125 +271,26 @@ async def dailyexptask():
 async def fafnirmsg():
     await notifymsg(lobby_channel, 'Fafnir Raid is up!', 'fafnirmsg()')
 
-async def fafnirtask():
-    #1:30 JST
-    task = dt.DailyTask(fafnirmsg, "fafnirmsg() 1:30 JST", tu.TimeOfDay(16, 30))
-    await task.start()
-    #8:30 JST
-    task = dt.DailyTask(fafnirmsg, "fafnirmsg() 8:30 JST", tu.TimeOfDay(23, 30))
-    await task.start()
-    #12:00 JST
-    task = dt.DailyTask(fafnirmsg, "fafnirmsg() 12:00 JST", tu.TimeOfDay(3, 0))
-    await task.start()
-    #20:30 JST
-    task = dt.DailyTask(fafnirmsg, "fafnirmsg() 20:30 JST", tu.TimeOfDay(11, 30))
-    await task.start()
-    #23:30 JST
-    task = dt.DailyTask(fafnirmsg, "fafnirmsg() 23:30 JST", tu.TimeOfDay(14, 30))
-    await task.start()
-
 async def fenrirmsg():
     await notifymsg(lobby_channel, 'Fenrir Raid is up!', 'fenrirmsg()')
-
-async def fenrirtask():
-    #1:30 JST
-    task = dt.DailyTask(fenrirmsg, "fenrirmsg() 1:30 JST", tu.TimeOfDay(16, 30))
-    await task.start()
-    #8:30 JST
-    task = dt.DailyTask(fenrirmsg, "fenrirmsg() 8:30 JST", tu.TimeOfDay(23, 30))
-    await task.start()
-    #12:00 JST
-    task = dt.DailyTask(fenrirmsg, "fenrirmsg() 12:00 JST", tu.TimeOfDay(3, 0))
-    await task.start()
-    #20:30 JST
-    task = dt.DailyTask(fenrirmsg, "fenrirmsg() 20:30 JST", tu.TimeOfDay(11, 30))
-    await task.start()
-    #23:30 JST
-    task = dt.DailyTask(fenrirmsg, "fenrirmsg() 23:30 JST", tu.TimeOfDay(14, 30))
-    await task.start()
 
 async def ogremsg():
     await notifymsg(lobby_channel, 'Ogre Raid is up!', 'ogremsg()')
 
-async def ogretask():
-    #1:30 JST
-    task = dt.DailyTask(ogremsg, "ogremsg() 1:30 JST", tu.TimeOfDay(16, 30))
-    await task.start()
-    #8:30 JST
-    task = dt.DailyTask(ogremsg, "ogremsg() 8:30 JST", tu.TimeOfDay(23, 30))
-    await task.start()
-    #12:00 JST
-    task = dt.DailyTask(ogremsg, "ogremsg() 12:00 JST", tu.TimeOfDay(3, 0))
-    await task.start()
-    #20:30 JST
-    task = dt.DailyTask(ogremsg, "ogremsg() 20:30 JST", tu.TimeOfDay(11, 30))
-    await task.start()
-    #23:30 JST
-    task = dt.DailyTask(ogremsg, "ogremsg() 23:30 JST", tu.TimeOfDay(14, 30))
-    await task.start()
-
 async def spidermsg():
     await notifymsg(lobby_channel, 'Spider Raid is up!', 'spidermsg()')
 
-async def spidertask():
-    #1:30 JST
-    task = dt.DailyTask(spidermsg, "spidermsg() 1:30 JST", tu.TimeOfDay(16, 30))
-    await task.start()
-    #8:30 JST
-    task = dt.DailyTask(spidermsg, "spidermsg() 8:30 JST", tu.TimeOfDay(23, 30))
-    await task.start()
-    #12:00 JST
-    task = dt.DailyTask(spidermsg, "spidermsg() 12:00 JST", tu.TimeOfDay(3, 0))
-    await task.start()
-    #20:30 JST
-    task = dt.DailyTask(spidermsg, "spidermsg() 20:30 JST", tu.TimeOfDay(11, 30))
-    await task.start()
-    #23:30 JST
-    task = dt.DailyTask(spidermsg, "spidermsg() 23:30 JST", tu.TimeOfDay(14, 30))
-    await task.start()
-
 async def midgardmsg():
     await notifymsg(lobby_channel, 'Midgard Raid is up!', 'midgardmsg()')
-
-async def midgardtask():
-    #1:30 JST
-    task = dt.DailyTask(midgardmsg, "midgardmsg() 1:30 JST", tu.TimeOfDay(16, 30))
-    await task.start()
-    #8:30 JST
-    task = dt.DailyTask(midgardmsg, "midgardmsg() 8:30 JST", tu.TimeOfDay(23, 30))
-    await task.start()
-    #12:00 JST
-    task = dt.DailyTask(midgardmsg, "midgardmsg() 12:00 JST", tu.TimeOfDay(3, 0))
-    await task.start()
-    #20:30 JST
-    task = dt.DailyTask(midgardmsg, "midgardmsg() 20:30 JST", tu.TimeOfDay(11, 30))
-    await task.start()
-    #23:30 JST
-    task = dt.DailyTask(midgardmsg, "midgardmsg() 23:30 JST", tu.TimeOfDay(14, 30))
-    await task.start()
-
+    
 async def zizmsg():
     await notifymsg(lobby_channel, 'Ziz Raid is up!', 'zizmsg()')
 
-async def ziztask():
-    #1:30 JST
-    task = dt.DailyTask(zizmsg, "zizmsg() 1:30 JST", tu.TimeOfDay(16, 30))
-    await task.start()
-    #8:30 JST
-    task = dt.DailyTask(zizmsg, "zizmsg() 8:30 JST", tu.TimeOfDay(23, 30))
-    await task.start()
-    #12:00 JST
-    task = dt.DailyTask(zizmsg, "zizmsg() 12:00 JST", tu.TimeOfDay(3, 0))
-    await task.start()
-    #20:30 JST
-    task = dt.DailyTask(zizmsg, "zizmsg() 20:30 JST", tu.TimeOfDay(11, 30))
-    await task.start()
-    #23:30 JST
-    task = dt.DailyTask(zizmsg, "zizmsg() 23:30 JST", tu.TimeOfDay(14, 30))
-    await task.start()
-
 async def rafflesiamsg():
     await notifymsg(lobby_channel, 'Rafflesia Raid is up!', 'rafflesiamsg()')
+
+async def fishmsg():
+    await notifymsg(lobby_channel, 'Fish Raid is up!', 'fishmsg()')
 
 async def raidtask(name, msgFn):
     #1:30 JST
@@ -442,13 +343,7 @@ async def on_ready():
         await pingtabstask()
 
         #Inactive
-        await raidtask("rafflesiamsg", rafflesiamsg)
-        #await fafnirtask()
-        #await midgardtask()
-        #await ziztask()
-        #await fenrirtask()
-        #await ogretask()
-        #await spidertask()
+        await raidtask("fishmsg", fishmsg)
         
         print('All Scheduled Notifications Queued')
 
@@ -770,7 +665,7 @@ async def raid(ctx):
     Check Raid timings
     """
     if ctx.invoked_subcommand is None:
-        await raid_message(ctx, 'Rafflesia Time Slots', 'rafflesia', 'rafflesia()', 'https://sinoalice.wiki/images/8/8c/Baptism_of_Fantasies.jpg')
+        await raid_message(ctx, 'Fish (for a lack of a better name) Time Slots', 'rafflesia', 'rafflesia()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
         #await bot.say('**' + command_prefix + 'help raid** for options')
         #await bot.say('No Raids Active')
 
@@ -828,6 +723,10 @@ async def ziz(ctx):
 @raid.command(pass_context=True)
 async def rafflesia(ctx):
     await raid_message(ctx, 'Rafflesia Time Slots', 'rafflesia', 'rafflesia()', 'https://sinoalice.wiki/images/8/8c/Baptism_of_Fantasies.jpg')
+
+@raid.command(pass_context=True)
+async def fish(ctx):
+    await raid_message(ctx, 'Fish (for a lack of a better name) Time Slots', 'standard_raid', 'fish()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
 
 #########################################################################################
 #Dice rolling
