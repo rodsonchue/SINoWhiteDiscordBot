@@ -937,8 +937,40 @@ async def f1(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/other/F1.png')
 
 @emote.command(pass_context=True)
+async def f2(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/other/F2.png')
+
+@emote.command(pass_context=True)
+async def f3(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/other/F3.png')
+    
+@emote.command(pass_context=True)
+async def f4(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/other/F4.png')
+
+@emote.command(pass_context=True)
+async def f5(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/other/F5.png')
+
+@emote.command(pass_context=True)
+async def f6(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/other/F6.png')
+
+@emote.command(pass_context=True)
+async def f7(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/other/F7.png')
+
+@emote.command(pass_context=True)
 async def disgusting(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/other/disgusting.png')
+
+@emote.command(pass_context=True)
+async def padoru(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/other/padoru.gif')
+
+@emote.command(pass_context=True)
+async def padorufast(ctx):
+    await bot.send_file(ctx.message.channel, 'emotes/other/padoru5x.gif')
     
 #########################################################################################
 #Database helper function
