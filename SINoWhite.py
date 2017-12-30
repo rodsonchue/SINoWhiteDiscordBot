@@ -404,7 +404,7 @@ async def removerole(ctx, *role_name : str):
     """
     Remove a role from yourself
     """
-    role = findRoleInServer(ctx, ' '.join(role_name))
+    role = await findRoleInServer(ctx, ' '.join(role_name))
 
     if role is None:
         await bot.say ("Role not found.")
