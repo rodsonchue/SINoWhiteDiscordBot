@@ -934,31 +934,31 @@ async def brb(ctx):
 
 @emote.command(pass_context=True)
 async def f1(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/F1.png')
+    await bot.send_file(ctx.message.channel, 'emotes/other/F1_alt.png')
 
 @emote.command(pass_context=True)
 async def f2(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/F2.png')
+    await bot.send_file(ctx.message.channel, 'emotes/other/F2_alt.png')
 
 @emote.command(pass_context=True)
 async def f3(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/F3.png')
+    await bot.send_file(ctx.message.channel, 'emotes/other/F3_alt.png')
     
 @emote.command(pass_context=True)
 async def f4(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/F4.png')
+    await bot.send_file(ctx.message.channel, 'emotes/other/F4_alt.png')
 
 @emote.command(pass_context=True)
 async def f5(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/F5.png')
+    await bot.send_file(ctx.message.channel, 'emotes/other/F5_alt.png')
 
 @emote.command(pass_context=True)
 async def f6(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/F6.png')
+    await bot.send_file(ctx.message.channel, 'emotes/other/F6_alt.png')
 
 @emote.command(pass_context=True)
 async def f7(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/F7.png')
+    await bot.send_file(ctx.message.channel, 'emotes/other/F7_alt.png')
 
 @emote.command(pass_context=True)
 async def disgusting(ctx):
