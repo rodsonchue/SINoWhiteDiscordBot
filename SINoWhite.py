@@ -343,7 +343,7 @@ async def on_ready():
         await pingtabstask()
 
         #Inactive
-        await raidtask("fishmsg", fishmsg)
+        await raidtask("ogremsg", ogremsg)
         
         print('All Scheduled Notifications Queued')
 
@@ -665,7 +665,7 @@ async def raid(ctx):
     Check Raid timings
     """
     if ctx.invoked_subcommand is None:
-        await raid_message(ctx, 'Nami Time Slots', 'standard_raid', 'nami()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
+        await raid_message(ctx, 'Ogre Time Slots', 'ogre', 'ogre()', 'https://sinoalice.wiki/images/2/2f/The_Nightmare_that_Haunts_the_Forests.png')
         #await bot.say('**' + command_prefix + 'help raid** for options')
         #await bot.say('No Raids Active')
 
