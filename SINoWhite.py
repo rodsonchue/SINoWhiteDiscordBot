@@ -268,6 +268,9 @@ async def dailyexptask():
     task = dt.DailyTask(dailyexpmsg, "dailyexpmsg() 22:30 JST", tu.TimeOfDay(13, 30))
     await task.start()
 
+async def midgardmsg():
+    await notifymsg(lobby_channel, 'Midgard Raid is up!', 'midgardmsg()')
+
 async def fafnirmsg():
     await notifymsg(lobby_channel, 'Fafnir Raid is up!', 'fafnirmsg()')
 
@@ -343,7 +346,7 @@ async def on_ready():
         await pingtabstask()
 
         #Inactive
-        await raidtask("ogremsg", ogremsg)
+        await raidtask("fafnirmsg", fafnirmsg)
         
         print('All Scheduled Notifications Queued')
 
@@ -659,13 +662,13 @@ async def exp():
     else:
         await bot.say(str(minutes) +' mins till start of next exp window')
 
-@bot.group(pass_context=True, description='Available options: fafnir, fenrir, ogre, spider, midgard, ziz')
+@bot.group(pass_context=True, description='Available options: fafnir, fenrir, ogre, spider, midgard, ziz, rafflesia, oyassan, nami')
 async def raid(ctx):
     """
     Check Raid timings
     """
     if ctx.invoked_subcommand is None:
-        await raid_message(ctx, 'Ogre Time Slots', 'ogre', 'ogre()', 'https://sinoalice.wiki/images/2/2f/The_Nightmare_that_Haunts_the_Forests.png')
+        await raid_message(ctx, 'Fafnir Time Slots', 'fafnir', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
         #await bot.say('**' + command_prefix + 'help raid** for options')
         #await bot.say('No Raids Active')
 
