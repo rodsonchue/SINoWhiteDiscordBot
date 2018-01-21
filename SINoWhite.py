@@ -346,7 +346,7 @@ async def on_ready():
         await pingtabstask()
 
         #Inactive
-        await raidtask("midgardmsg", midgardmsg)
+        await raidtask("ogremsg", ogremsg)
         
         print('All Scheduled Notifications Queued')
 
@@ -668,7 +668,7 @@ async def raid(ctx):
     Check Raid timings
     """
     if ctx.invoked_subcommand is None:
-        await raid_message(ctx, 'Midgardsormr Time Slots', 'midgard', 'midgard()', 'https://sinoalice.wiki/images/1/14/BannerL020.png')
+        await raid_message(ctx, 'Ogre Time Slots', 'ogre', 'ogre()', 'https://sinoalice.wiki/images/2/2f/The_Nightmare_that_Haunts_the_Forests.png')
         #await bot.say('**' + command_prefix + 'help raid** for options')
         #await bot.say('No Raids Active')
 
