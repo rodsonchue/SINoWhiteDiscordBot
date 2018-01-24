@@ -295,6 +295,9 @@ async def rafflesiamsg():
 async def fishmsg():
     await notifymsg(lobby_channel, 'Fish Raid is up!', 'fishmsg()')
 
+async def surutomsg():
+    await notifymsg(lobby_channel, 'Suruto Raid is up!', 'surutomsg()')
+
 async def raidtask(name, msgFn):
     #1:30 JST
     task = dt.DailyTask(msgFn, name+"() 1:30 JST", tu.TimeOfDay(16, 30))
@@ -346,7 +349,7 @@ async def on_ready():
         await pingtabstask()
 
         #Inactive
-        await raidtask("ogremsg", ogremsg)
+        await raidtask("surutomsg", surutomsg)
         
         print('All Scheduled Notifications Queued')
 
@@ -668,7 +671,7 @@ async def raid(ctx):
     Check Raid timings
     """
     if ctx.invoked_subcommand is None:
-        await raid_message(ctx, 'Ogre Time Slots', 'ogre', 'ogre()', 'https://sinoalice.wiki/images/2/2f/The_Nightmare_that_Haunts_the_Forests.png')
+        await raid_message(ctx, 'Suruto Time Slots', 'standard_raid', 'suruto()', 'https://media.discordapp.net/attachments/318376297963192321/405292226730524672/DUNlLv3U8AA9arN.png')
         #await bot.say('**' + command_prefix + 'help raid** for options')
         #await bot.say('No Raids Active')
 
@@ -734,6 +737,10 @@ async def nami(ctx):
 @raid.command(pass_context=True)
 async def oyassan(ctx):
     await raid_message(ctx, 'Oyassan Time Slots', 'standard_raid', 'oyassan()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
+
+@raid.command(pass_context=True)
+async def suruto(ctx):
+    await raid_message(ctx, 'Suruto Time Slots', 'standard_raid', 'suruto()', 'https://media.discordapp.net/attachments/318376297963192321/405292226730524672/DUNlLv3U8AA9arN.png')
 
 #########################################################################################
 #Dice rolling
