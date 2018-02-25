@@ -32,6 +32,8 @@ trackedEvents = {}
 locked_roles = []
 colo_cached_names = {}
 active_raids = {}
+raid_info = {}
+tracker = None
 ##############
 
 ##############
@@ -48,78 +50,115 @@ database_url = os.environ['DATABASE_URL'] #URL is taken from computer's env for 
 ##############
 
 #########################################################################################
-#Boot up procedure for bot (Before login)
+#Boot up procedures for bot (Before login)
 
-config = None
-
-with open(config_filepath, 'r') as f:
-    config = json.load(f)
-    print ('------')
-    print ('Loading config file...')
-    command_prefix = config['command_prefix']
-    print ('command_prefix:', command_prefix)
-    bot_test_channel = config['bot_test_channel']
-    print ('bot_test_channel:', bot_test_channel)
-    lobby_channel = config['lobby_channel']
-    print ('lobby_channel:', lobby_channel)
-    
-    if 'trackedEvents' in config:
-        for eventName, timeLst in config['trackedEvents'].items():
-            eventTimeLst = []
-            for hr, mins in timeLst:
-                eventTimeLst.append(tu.TimeOfDay(hr, mins))
-                
-            trackedEvents[eventName] = eventTimeLst
+def load_config():
+    config = None
+    with open(config_filepath, 'r') as f:
+        #All the configurations that are being managed
+        global command_prefix
+        global bot_test_channel
+        global lobby_channel
+        global trackedEvents
+        global locked_roles
+        global active_raids
+        global raid_info
         
-        print ('trackedEvents: ' + ', '.join('{}'.format(key) for key in trackedEvents.keys()))
-    else:
-        print ('Warning: trackedEvents field missing from config!')
+        config = json.load(f)
+        print ('------')
+        print ('Loading config file...')
+        
+        command_prefix = config['command_prefix']
+        print ('command_prefix:', command_prefix)
+        
+        bot_test_channel = config['bot_test_channel']
+        print ('bot_test_channel:', bot_test_channel)
+
+        lobby_channel = config['lobby_channel']
+        print ('lobby_channel:', lobby_channel)
+        
+        if 'trackedEvents' in config:
+            for eventName, timeLst in config['trackedEvents'].items():
+                eventTimeLst = []
+                for hr, mins in timeLst:
+                    eventTimeLst.append(tu.TimeOfDay(hr, mins))
+                    
+                trackedEvents[eventName] = eventTimeLst
+            
+            print ('trackedEvents: ' + ', '.join('{}'.format(key) for key in trackedEvents.keys()))
+        else:
+            print ('WARNING: trackedEvents field missing from config!')
 
 
-    if 'locked_roles' in config:
-        locked_roles = config['locked_roles']
-        print ('locked_roles: ' + ', '.join('{}'.format(role) for role in locked_roles))
-    else:
-        print ('Warning: No locked_roles set')
+        if 'locked_roles' in config:
+            locked_roles = config['locked_roles']
+            print ('locked_roles: ' + ', '.join('{}'.format(role) for role in locked_roles))
+        else:
+            print ('WARNING: No locked_roles set')
 
-    if 'active_raids' in config:
-        active_raids = config['active_raids']
-        print ('active_raids: ' + ', '.join('{}'.format(raid) for raid in active_raids.keys()))
-    else:
-        print ('INFO: No active_raids')
+        if 'active_raids' in config:
+            active_raids = config['active_raids']
+            print ('active_raids: ' + ', '.join('{}'.format(raid) for raid in active_raids.keys()))
+        else:
+            print ('INFO: No active_raids')
 
+        if 'raid_info' in config:
+            raid_info = config['raid_info']
+            print ('raid_info: ' + ', '.join('{}'.format(raid) for raid in raid_info.keys()))
+        else:
+            print ("WARNING: No raid_info available")
+
+def load_cogs():
+    print('------')
+    print ('Loading cogs')
+    for cog in cogs:
+        try:
+            bot.load_extension(cog)
+            print ("\t" + cog + " cog loaded")
+        except Exception as e:
+            exc = '{}: {}'.format(type(e).__name__, e)
+            print('Failed to load extension {}\n{}'.format(cog, exc))
+    print('------')
+
+def load_tracker():
+    print('Seting up Tracker...')
+    global tracker
+    tracker = et.EventTracker()
+    for eventName, eventTimeLst in trackedEvents.items():
+        tracker.addEvent(eventName, eventTimeLst);
+    print('Tracker ready')
+    print('------')
+
+load_config()
 bot = commands.Bot(command_prefix=command_prefix, description=description)
-print('------')
-
-print ('Loading cogs')
-for cog in cogs:
-    try:
-        bot.load_extension(cog)
-        print ("\t" + cog + " cog loaded")
-    except Exception as e:
-        exc = '{}: {}'.format(type(e).__name__, e)
-        print('Failed to load extension {}\n{}'.format(cog, exc))
-print('------')
-
-############################
-#For tracker module
-print('Seting up Tracker...')
-tracker = et.EventTracker()
-for eventName, eventTimeLst in trackedEvents.items():
-    tracker.addEvent(eventName, eventTimeLst);
-print('Tracker ready')
-print('------')
+load_cogs()
+load_tracker()
 
 #########################################################################################
 #Dev-only commands (hidden)
 
-async def doBackup():
-    
-    dump = json.dumps({'command_prefix':command_prefix,
+def getDump():
+    return json.dumps({'command_prefix':command_prefix,
                        'bot_test_channel':bot_test_channel,
                        'lobby_channel':lobby_channel,
                        'trackedEvents':trackedEvents,
-                       'locked_roles':locked_roles}, cls=tu.TodEncoder)
+                       'locked_roles':locked_roles,
+                       'active_raids':active_raids,
+                       'raid_info':raid_info}, cls=tu.TodEncoder)
+
+async def updateConf():
+    dump = getDump()
+    
+    with open(config_filepath, 'w') as f:
+        f.write(dump)
+        f.close()
+
+    time_stamp = tu.time_now()
+    print (time_stamp + " DEV Config Changed\nDump:", dump)
+
+async def doBackup():
+    
+    dump = getDump()
     
     with open(config_filepath + '.bak', 'w') as f:
         f.write(dump)
@@ -194,6 +233,20 @@ async def __clearcachednames():
     #Delete msg after 5s
     await asyncio.sleep(5)
     await bot.delete_message(sent_msg)
+
+@bot.command(description='Modify raid_info', hidden=True)
+async def __raid_info(raidname, name, raidtype, img_url):
+    raid_obj = {}
+    raid_obj['name'] = name
+    raid_obj['type'] = raidtype
+    raid_obj['img_url'] = img_url
+    
+    global raid_info
+    raid_info[raidname] = raid_obj
+
+    #Save to file
+    await updateConf()
+    await bot.say("Conf Updated")
     
 
 #########################################################################################
@@ -236,7 +289,7 @@ async def notifymsg(channel_id, msg, caller_func_name, delete=True, useEmbed=Tru
             sent_msg = None
 
 async def dailyexpmsg():
-    await notifymsg(lobby_channel, 'Daily EXP dungeons are up!', 'dailyexpmsg()')
+    await notifymsg(lobby_channel, 'Daily EXP dungeons are up!', 'DAILY_EXP_TASK')
 
 async def dailyexptask():
     if tracker.hasEvent('exp'):
@@ -246,21 +299,6 @@ async def dailyexptask():
 
     else:
         print (tu.time_now() + " ERROR Unable to schedule DAILY_EXP_TASK as exp is missing from tracker")
-    #1:00 JST
-    #task = dt.DailyTask(dailyexpmsg, "dailyexpmsg @ 1:00 JST", tu.TimeOfDay(16, 0))
-    #await task.start()
-    #7:30 JST
-    #task = dt.DailyTask(dailyexpmsg, "dailyexpmsg @ 7:30 JST", tu.TimeOfDay(22, 30))
-    #await task.start()
-    #12:00 JST
-    #task = dt.DailyTask(dailyexpmsg, "dailyexpmsg @ 12:00 JST", tu.TimeOfDay(3, 0))
-    #await task.start()
-    #19:30 JST
-    #task = dt.DailyTask(dailyexpmsg, "dailyexpmsg @ 19:30 JST", tu.TimeOfDay(10, 30))
-    #await task.start()
-    #22:30 JST
-    #task = dt.DailyTask(dailyexpmsg, "dailyexpmsg @ 22:30 JST", tu.TimeOfDay(13, 30))
-    #await task.start()
 
 async def raidmsg(*args, **kwargs):
     raidname = ''
@@ -270,23 +308,6 @@ async def raidmsg(*args, **kwargs):
         raidlogmsg = raidname+'_raid_msg'
         
     await notifymssg(lobby_channel, raidname + 'Raid is up!', raidlogmsg)
-
-async def raidtask(name, msgFn, *args, **kwargs):
-    #1:30 JST
-    task = dt.DailyTask(msgFn, name+" Raid @ 1:30 JST", tu.TimeOfDay(16, 30), args, kwargs)
-    await task.start()
-    #8:30 JST
-    task = dt.DailyTask(msgFn, name+" Raid @ 8:30 JST", tu.TimeOfDay(23, 30), args, kwargs)
-    await task.start()
-    #12:00 JST
-    task = dt.DailyTask(msgFn, name+" Raid @ 12:00 JST", tu.TimeOfDay(3, 0), args, kwargs)
-    await task.start()
-    #20:30 JST
-    task = dt.DailyTask(msgFn, name+" Raid @ 20:30 JST", tu.TimeOfDay(11, 30), args, kwargs)
-    await task.start()
-    #23:30 JST
-    task = dt.DailyTask(msgFn, name+" Raid @ 23:30 JST", tu.TimeOfDay(14, 30), args, kwargs)
-    await task.start()
 
 async def completedailymsg():
     await notifymsg(lobby_channel, 'Remember to claim your daily cleaning ticket!', 'completedailymsg()', delete=False, useEmbed=True)
@@ -306,47 +327,6 @@ async def schedule_raids():
                 await task.start()
         else:
             print (tu.time_now() + " ERROR Unable to schedule " + name + " as " + time_set + " is missing from tracker")
-        
-
-#########################################################################################
-#Bot warm up procedure
-firstBoot = True
-    
-@bot.event
-async def on_ready():
-    print('------')
-    print(tu.time_now() + ' Logged in as')
-    print('Username: ' + bot.user.name)
-    print('Bot Id: ' + bot.user.id)
-    print('------')
-
-    global firstBoot
-    if firstBoot:
-        #######################
-        #Notifications go here
-        #######################
-
-        print('Seting up Scheduled Notifications...')
-
-        #Active
-        await dailyexptask()
-        await completedailytask()
-        #await raidtask("crystalwispmsg", crystalwispmsg)
-        #await raidtask("Crystal Wisp", raidmsg, raidname="Crystal Wisp")
-        await schedule_raids()
-
-        #Inactive
-        #None
-        
-        print('All Scheduled Notifications Queued')
-
-        print('------')
-        
-        firstBoot = False
-
-@bot.event
-async def on_error(event, *args, **kwargs):
-    print(tu.time_now() + " Error ")
 
 #########################################################################################
 #General
@@ -657,7 +637,7 @@ async def exp():
         await bot.say(str(minutes) +' mins till start of next exp window')
 
 @bot.group(pass_context=True, description='Available options: fafnir, fenrir, ogre, spider, midgard, ziz, rafflesia, oyassan, nami')
-async def raid(ctx):
+async def raid_old(ctx):
     """
     Check Raid timings
     """
@@ -665,6 +645,18 @@ async def raid(ctx):
         await raid_message(ctx, 'Crystal Wisp Time Slots', 'standard_raid', 'crystalwisp()', 'https://cdn.discordapp.com/attachments/318376297963192321/415131198243864587/DWYvvk9V4AAvEYv.jpg')
         #await bot.say('**' + command_prefix + 'help raid** for options')
         #await bot.say('No Raids Active')
+
+@bot.group(pass_context=True, description='Shows details about a particular raid')
+async def raid(ctx, raidname="NONE"):
+    """
+    Check Raid timings
+    """
+    if raidname in raid_info:
+        raid = raid_info[raidname]
+        await raid_message(ctx, raid['name']+' Time Slots', raid['type'], "raid("+raidname+")", raid['img_url'])
+    else:
+        await bot.say("Available options: " + ', '.join('{}'.format(key) for key in raid_info.keys()))
+    
 
 async def raid_message(ctx, title, raidName, func_name, image_url=None):
     msg = ''
@@ -695,31 +687,31 @@ async def raid_message(ctx, title, raidName, func_name, image_url=None):
 
 @raid.command(pass_context=True)
 async def fafnir(ctx):
-    await raid_message(ctx, 'Fafnir Time Slots', 'fafnir', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
+    await raid_message(ctx, 'Fafnir Time Slots', 'standard_raid', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
 
 @raid.command(pass_context=True)
 async def fenrir(ctx):
-    await raid_message(ctx, 'Fenrir Time Slots', 'fenrir', 'fenrir()', 'https://sinoalice.wiki/images/d/d7/The_Nightmare_that_Haunts_the_Hills.jpg')
+    await raid_message(ctx, 'Fenrir Time Slots', 'standard_raid', 'fenrir()', 'https://sinoalice.wiki/images/d/d7/The_Nightmare_that_Haunts_the_Hills.jpg')
 
 @raid.command(pass_context=True)
 async def ogre(ctx):
-    await raid_message(ctx, 'Ogre Time Slots', 'ogre', 'ogre()', 'https://sinoalice.wiki/images/2/2f/The_Nightmare_that_Haunts_the_Forests.png')
+    await raid_message(ctx, 'Ogre Time Slots', 'standard_raid', 'ogre()', 'https://sinoalice.wiki/images/2/2f/The_Nightmare_that_Haunts_the_Forests.png')
 
 @raid.command(pass_context=True)
 async def spider(ctx):
-    await raid_message(ctx, 'Spider Time Slots', 'spider', 'spider()', 'https://sinoalice.wiki/images/4/45/Twin_Fangs_of_Ptomaine_Poison.png')
+    await raid_message(ctx, 'Spider Time Slots', 'standard_raid', 'spider()', 'https://sinoalice.wiki/images/4/45/Twin_Fangs_of_Ptomaine_Poison.png')
 
 @raid.command(pass_context=True)
 async def midgard(ctx):
-    await raid_message(ctx, 'Midgardsormr Time Slots', 'midgard', 'midgard()', 'https://sinoalice.wiki/images/1/14/BannerL020.png')
+    await raid_message(ctx, 'Midgardsormr Time Slots', 'standard_raid', 'midgard()', 'https://sinoalice.wiki/images/1/14/BannerL020.png')
 
 @raid.command(pass_context=True)
 async def ziz(ctx):
-    await raid_message(ctx, 'Ziz Time Slots', 'ziz', 'ziz()', 'https://sinoalice.wiki/images/c/cd/Wing_of_Fate.jpg')
+    await raid_message(ctx, 'Ziz Time Slots', 'standard_raid', 'ziz()', 'https://sinoalice.wiki/images/c/cd/Wing_of_Fate.jpg')
 
 @raid.command(pass_context=True)
 async def rafflesia(ctx):
-    await raid_message(ctx, 'Rafflesia Time Slots', 'rafflesia', 'rafflesia()', 'https://sinoalice.wiki/images/8/8c/Baptism_of_Fantasies.jpg')
+    await raid_message(ctx, 'Rafflesia Time Slots', 'standard_raid', 'rafflesia()', 'https://sinoalice.wiki/images/8/8c/Baptism_of_Fantasies.jpg')
 
 @raid.command(pass_context=True)
 async def nami(ctx):
@@ -992,6 +984,46 @@ def getDatabaseConn(database_url):
     )
     return conn
 
+#########################################################################################
+#Bot warm up procedure
+firstBoot = True
+    
+@bot.event
+async def on_ready():
+    print('------')
+    print(tu.time_now() + ' Logged in as')
+    print('Username: ' + bot.user.name)
+    print('Bot Id: ' + bot.user.id)
+    print('------')
+
+    global firstBoot
+    if firstBoot:
+        #######################
+        #Notifications go here
+        #######################
+
+        print('Seting up Scheduled Notifications...')
+
+        #Active
+        await dailyexptask()
+        await completedailytask()
+        #await raidtask("crystalwispmsg", crystalwispmsg)
+        #await raidtask("Crystal Wisp", raidmsg, raidname="Crystal Wisp")
+        await schedule_raids()
+
+        #Inactive
+        #None
+        
+        print('All Scheduled Notifications Queued')
+
+        print('------')
+        
+        firstBoot = False
+
+@bot.event
+async def on_error(event, *args, **kwargs):
+    print(tu.time_now() + " Error " + event)
+    
 #This is a modified copy of bot.run from discord's default
 noKbInterrupt=True
 def runbot(bot, *args, **kwargs):
@@ -1018,11 +1050,13 @@ def runbot(bot, *args, **kwargs):
             bot.loop.close()
     except Exception as e:
         print (tu.time_now() + "ERROR Generic Exception of type " + e.__class__.__name__)
-            
+
+#########################################################################################
+#Actual Execution of Bot
+
 while noKbInterrupt:
     runbot(bot, token)
     
-	
 
 #bot.run(token)
 print (tu.time_now() + " INFO Bot Exit")
