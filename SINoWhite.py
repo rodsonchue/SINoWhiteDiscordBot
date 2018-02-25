@@ -297,6 +297,9 @@ async def fishmsg():
 
 async def surutomsg():
     await notifymsg(lobby_channel, 'Suruto Raid is up!', 'surutomsg()')
+	
+async def crystalwispmsg():
+	await notifymsg(lobby_channel, 'Crystal Wisp Raid is up!', 'crystalwispmsg()')
 
 async def raidtask(name, msgFn):
     #1:30 JST
@@ -346,16 +349,20 @@ async def on_ready():
         #Active
         await dailyexptask()
         await completedailytask()
-        await pingtabstask()
+        await raidtask("crystalwispmsg", crystalwispmsg)
 
         #Inactive
-        await raidtask("surutomsg", surutomsg)
+        #await pingtabstask()
         
         print('All Scheduled Notifications Queued')
 
         print('------')
         
         firstBoot = False
+
+@bot.event
+async def on_error(event, *args, **kwargs):
+    print("Error?")
 
 #########################################################################################
 #General
@@ -671,7 +678,7 @@ async def raid(ctx):
     Check Raid timings
     """
     if ctx.invoked_subcommand is None:
-        await raid_message(ctx, 'Suruto Time Slots', 'standard_raid', 'suruto()', 'https://media.discordapp.net/attachments/318376297963192321/405292226730524672/DUNlLv3U8AA9arN.png')
+        await raid_message(ctx, 'Crystal Wisp Time Slots', 'standard_raid', 'crystalwisp()', 'https://cdn.discordapp.com/attachments/318376297963192321/415131198243864587/DWYvvk9V4AAvEYv.jpg')
         #await bot.say('**' + command_prefix + 'help raid** for options')
         #await bot.say('No Raids Active')
 
@@ -741,6 +748,10 @@ async def oyassan(ctx):
 @raid.command(pass_context=True)
 async def suruto(ctx):
     await raid_message(ctx, 'Suruto Time Slots', 'standard_raid', 'suruto()', 'https://media.discordapp.net/attachments/318376297963192321/405292226730524672/DUNlLv3U8AA9arN.png')
+	
+@raid.command(pass_context=True)
+async def crystalwisp(ctx):
+    await raid_message(ctx, 'Crystal Wisp Time Slots', 'standard_raid', 'crystalwisp()', 'https://cdn.discordapp.com/attachments/318376297963192321/415131198243864587/DWYvvk9V4AAvEYv.jpg')
 
 #########################################################################################
 #Dice rolling
@@ -786,7 +797,7 @@ async def emote(ctx):
 async def thanks(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/en/chatstamp001_es.png')
 
-@emote.command(pass_context=True)
+@emote.command(pass_context=True, aliases=['shikatanai,shikatanonai,shikataganai'])
 async def unavoidable(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/ChatStamp002s.png')
 
@@ -997,4 +1008,50 @@ def getDatabaseConn(database_url):
     )
     return conn
 
-bot.run(token)
+noKbInterrupt=True
+#This is a copy of bot.run from discord's default
+def runbot(bot, *args, **kwargs):
+    try:
+        bot.loop.run_until_complete(bot.start(*args, **kwargs))
+    except KeyboardInterrupt:
+        print ("KeyboardInterrupt Exception")
+        global noKbInterrupt
+        noKbInterrupt=False
+		
+        bot.loop.run_until_complete(bot.logout())
+        pending = asyncio.Task.all_tasks(loop=bot.loop)
+        gathered = asyncio.gather(*pending, loop=bot.loop)
+        try:
+            gathered.cancel()
+            bot.loop.run_until_complete(gathered)
+
+            # we want to retrieve any exceptions to make sure that
+            # they don't nag us about it being un-retrieved.
+            gathered.exception()
+        except:
+            pass
+        finally:
+            bot.loop.close()
+#	except Exception as e:
+#	print ("Exception")
+#        bot.loop.run_until_complete(bot.logout())
+#        pending = asyncio.Task.all_tasks(loop=bot.loop)
+#        gathered = asyncio.gather(*pending, loop=bot.loop)
+#        try:
+#            gathered.cancel()
+#            bot.loop.run_until_complete(gathered)
+
+#            # we want to retrieve any exceptions to make sure that
+#            # they don't nag us about it being un-retrieved.
+#            gathered.exception()
+#        except:
+#            pass
+#        finally:
+#            bot.loop.close()
+#			raise e
+while noKbInterrupt:
+	runbot(bot, token)
+	
+
+#bot.run(token)
+print ("Bot Exit")
