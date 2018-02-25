@@ -4,12 +4,15 @@ import TimeUtils as tu
 from contextlib import suppress
 
 class DailyTask:
-    def __init__(self, func, func_name, timeofday : tu.TimeOfDay):
+    def __init__(self, func, func_name, timeofday : tu.TimeOfDay, *args, **kwargs):
         self.func = func
         self.func_name = func_name
         self.timeofday = timeofday
         self.is_started = False
         self._task = None
+        self.args = args
+        self.kwargs = kwargs
+        self.hasExtraArgs = bool(len(self.args)>0 or bool(kwargs))
 
     async def start(self):
         if not self.is_started:
@@ -41,5 +44,10 @@ class DailyTask:
             time_stamp = tu.time_now()
             print (time_stamp + " DAILY TASK: " + self.func_name + " fires off after " + str(s) + "s")
             await asyncio.sleep(s)
-            await self.func()
+            
+            if self.hasExtraArgs:
+                await self.func(self.args, self.kwargs)
+            else:
+                await self.func()
+                
             await asyncio.sleep(5.0)

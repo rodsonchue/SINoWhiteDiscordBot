@@ -25,13 +25,13 @@ config_filepath = 'config.json'
 
 ##############
 #Vars
-token = os.environ['SINOALICE_TOKEN']
+token = os.environ['SINOALICE_TOKEN'] #Token is taken from computer's env for security
 command_prefix = ''
-colo_notify = True
 description = 'SINoWhite bot for TeaParty'
 trackedEvents = {}
 locked_roles = []
 colo_cached_names = {}
+active_raids = {}
 ##############
 
 ##############
@@ -44,7 +44,7 @@ lobby_channel = ''
 
 ##############
 #SQL vars
-database_url = os.environ['DATABASE_URL']
+database_url = os.environ['DATABASE_URL'] #URL is taken from computer's env for security
 ##############
 
 #########################################################################################
@@ -54,12 +54,10 @@ config = None
 
 with open(config_filepath, 'r') as f:
     config = json.load(f)
-    print('------')
+    print ('------')
     print ('Loading config file...')
     command_prefix = config['command_prefix']
     print ('command_prefix:', command_prefix)
-    colo_notify = config['colo_notify']
-    print ('colo_notify:', colo_notify)
     bot_test_channel = config['bot_test_channel']
     print ('bot_test_channel:', bot_test_channel)
     lobby_channel = config['lobby_channel']
@@ -83,6 +81,12 @@ with open(config_filepath, 'r') as f:
         print ('locked_roles: ' + ', '.join('{}'.format(role) for role in locked_roles))
     else:
         print ('Warning: No locked_roles set')
+
+    if 'active_raids' in config:
+        active_raids = config['active_raids']
+        print ('active_raids: ' + ', '.join('{}'.format(raid) for raid in active_raids.keys()))
+    else:
+        print ('INFO: No active_raids')
 
 bot = commands.Bot(command_prefix=command_prefix, description=description)
 print('------')
@@ -108,25 +112,12 @@ print('------')
 
 #########################################################################################
 #Dev-only commands (hidden)
-@bot.command(description='Set flag for whether to notify people about colo or not', hidden=True)
-async def __notify_flag(flag:bool):
-    global colo_notify
-    if flag:
-        colo_notify = True
-        await bot.say('Flag is turned on')
-    else:
-        colo_notify = False
-        await bot.say('Flag is turned off')
-        
-    time_stamp = tu.time_now()
-    print (time_stamp + " DEV Flag update: colo_notify = " + str(colo_notify))
 
 async def doBackup():
     
     dump = json.dumps({'command_prefix':command_prefix,
                        'bot_test_channel':bot_test_channel,
                        'lobby_channel':lobby_channel,
-                       'colo_notify':colo_notify,
                        'trackedEvents':trackedEvents,
                        'locked_roles':locked_roles}, cls=tu.TodEncoder)
     
@@ -232,90 +223,69 @@ async def notifymsg(channel_id, msg, caller_func_name, delete=True, useEmbed=Tru
         if(delete):
             print (time_stamp + " INFO Message with id " + sent_msg.id + " scheduled for delete after 30mins")
             await asyncio.sleep(1800)
-            await bot.delete_message(sent_msg)
-            delete_time_stamp = tu.time_now()
-            print (delete_time_stamp + " INFO Message sent to channel " + channel.name + " with id " + sent_msg.id + " deleted")
+
+            #Extra exception catching for situations like message already not existing (manual delete by something else)
+            try:
+                await bot.delete_message(sent_msg)
+                delete_time_stamp = tu.time_now()
+                print (delete_time_stamp + " INFO Message sent to channel " + channel.name + " with id " + sent_msg.id + " deleted")
+            except discord.Forbidden:
+                print (delete_time_stamp + " ERROR Unable to delete message with id " + sent_msg.id + " as bot does not have proper permissions")
+            except discord.HTTPException as e:
+                print (delete_time_stamp + " WARNING Unable to delete message with id " + sent_msg.id + "\nDetails: " + e.text)
             sent_msg = None
-
-async def pingtabsmsg():
-    if colo_notify:
-        await notifymsg(lobby_channel, '<@253362110975836160> It\'s colo time <:blobhyperthink:347369958302547968>', 'pingtabsmsg()', delete=False, useEmbed=False)
-    else:
-        time_stamp = tu.time_now()
-        print (time_stamp + ' INFO ' +'pingtabsmsg() not fired because colo_notify flag is turned off')
-
-async def pingtabstask():
-    task = dt.DailyTask(pingtabsmsg, 'Ping tabs for colo', tu.TimeOfDay(13, 55))
-    await task.start()
 
 async def dailyexpmsg():
     await notifymsg(lobby_channel, 'Daily EXP dungeons are up!', 'dailyexpmsg()')
 
 async def dailyexptask():
+    if tracker.hasEvent('exp'):
+        for eventTime in tracker.getEvent('exp'):
+            task = dt.DailyTask(dailyexpmsg, "DAILY_EXP_TASK @ "+eventTime.toJST(), eventTime)
+            await task.start()
+
+    else:
+        print (tu.time_now() + " ERROR Unable to schedule DAILY_EXP_TASK as exp is missing from tracker")
     #1:00 JST
-    task = dt.DailyTask(dailyexpmsg, "dailyexpmsg() 1:00 JST", tu.TimeOfDay(16, 0))
-    await task.start()
+    #task = dt.DailyTask(dailyexpmsg, "dailyexpmsg @ 1:00 JST", tu.TimeOfDay(16, 0))
+    #await task.start()
     #7:30 JST
-    task = dt.DailyTask(dailyexpmsg, "dailyexpmsg() 7:30 JST", tu.TimeOfDay(22, 30))
-    await task.start()
+    #task = dt.DailyTask(dailyexpmsg, "dailyexpmsg @ 7:30 JST", tu.TimeOfDay(22, 30))
+    #await task.start()
     #12:00 JST
-    task = dt.DailyTask(dailyexpmsg, "dailyexpmsg() 12:00 JST", tu.TimeOfDay(3, 0))
-    await task.start()
+    #task = dt.DailyTask(dailyexpmsg, "dailyexpmsg @ 12:00 JST", tu.TimeOfDay(3, 0))
+    #await task.start()
     #19:30 JST
-    task = dt.DailyTask(dailyexpmsg, "dailyexpmsg() 19:30 JST", tu.TimeOfDay(10, 30))
-    await task.start()
+    #task = dt.DailyTask(dailyexpmsg, "dailyexpmsg @ 19:30 JST", tu.TimeOfDay(10, 30))
+    #await task.start()
     #22:30 JST
-    task = dt.DailyTask(dailyexpmsg, "dailyexpmsg() 22:30 JST", tu.TimeOfDay(13, 30))
-    await task.start()
+    #task = dt.DailyTask(dailyexpmsg, "dailyexpmsg @ 22:30 JST", tu.TimeOfDay(13, 30))
+    #await task.start()
 
-async def midgardmsg():
-    await notifymsg(lobby_channel, 'Midgard Raid is up!', 'midgardmsg()')
+async def raidmsg(*args, **kwargs):
+    raidname = ''
+    raidlogmsg = '_MISSING_ARGUEMENT_'
+    if 'raidname' in kwargs:
+        raidname = kwargs['raidname']
+        raidlogmsg = raidname+'_raid_msg'
+        
+    await notifymssg(lobby_channel, raidname + 'Raid is up!', raidlogmsg)
 
-async def fafnirmsg():
-    await notifymsg(lobby_channel, 'Fafnir Raid is up!', 'fafnirmsg()')
-
-async def fenrirmsg():
-    await notifymsg(lobby_channel, 'Fenrir Raid is up!', 'fenrirmsg()')
-
-async def ogremsg():
-    await notifymsg(lobby_channel, 'Ogre Raid is up!', 'ogremsg()')
-
-async def spidermsg():
-    await notifymsg(lobby_channel, 'Spider Raid is up!', 'spidermsg()')
-
-async def midgardmsg():
-    await notifymsg(lobby_channel, 'Midgard Raid is up!', 'midgardmsg()')
-    
-async def zizmsg():
-    await notifymsg(lobby_channel, 'Ziz Raid is up!', 'zizmsg()')
-
-async def rafflesiamsg():
-    await notifymsg(lobby_channel, 'Rafflesia Raid is up!', 'rafflesiamsg()')
-
-async def fishmsg():
-    await notifymsg(lobby_channel, 'Fish Raid is up!', 'fishmsg()')
-
-async def surutomsg():
-    await notifymsg(lobby_channel, 'Suruto Raid is up!', 'surutomsg()')
-	
-async def crystalwispmsg():
-	await notifymsg(lobby_channel, 'Crystal Wisp Raid is up!', 'crystalwispmsg()')
-
-async def raidtask(name, msgFn):
+async def raidtask(name, msgFn, *args, **kwargs):
     #1:30 JST
-    task = dt.DailyTask(msgFn, name+"() 1:30 JST", tu.TimeOfDay(16, 30))
+    task = dt.DailyTask(msgFn, name+" Raid @ 1:30 JST", tu.TimeOfDay(16, 30), args, kwargs)
     await task.start()
     #8:30 JST
-    task = dt.DailyTask(msgFn, name+"() 8:30 JST", tu.TimeOfDay(23, 30))
+    task = dt.DailyTask(msgFn, name+" Raid @ 8:30 JST", tu.TimeOfDay(23, 30), args, kwargs)
     await task.start()
     #12:00 JST
-    task = dt.DailyTask(msgFn, name+"() 12:00 JST", tu.TimeOfDay(3, 0))
+    task = dt.DailyTask(msgFn, name+" Raid @ 12:00 JST", tu.TimeOfDay(3, 0), args, kwargs)
     await task.start()
     #20:30 JST
-    task = dt.DailyTask(msgFn, name+"() 20:30 JST", tu.TimeOfDay(11, 30))
+    task = dt.DailyTask(msgFn, name+" Raid @ 20:30 JST", tu.TimeOfDay(11, 30), args, kwargs)
     await task.start()
     #23:30 JST
-    task = dt.DailyTask(msgFn, name+"() 23:30 JST", tu.TimeOfDay(14, 30))
+    task = dt.DailyTask(msgFn, name+" Raid @ 23:30 JST", tu.TimeOfDay(14, 30), args, kwargs)
     await task.start()
 
 async def completedailymsg():
@@ -323,8 +293,20 @@ async def completedailymsg():
     await reset_participation()
     
 async def completedailytask():
-    task = dt.DailyTask(completedailymsg, "completedailymsg() 23:40 JST", tu.TimeOfDay(14, 40))
+    task = dt.DailyTask(completedailymsg, "COMPLETE_DAILY_TASK @ 23:40 JST", tu.TimeOfDay(14, 40))
     await task.start()
+
+async def schedule_raids():
+    print ("Scheduling raids...")
+    for name, time_set in active_raids.items():
+        if tracker.hasEvent(time_set):
+            eventTimes = tracker.getEvent(time_set)
+            for eventTime in eventTimes:
+                task = dt.DailyTask(raidmsg, name+" Raid @ "+eventTime.toJST(), eventTime, raidname=name)
+                await task.start()
+        else:
+            print (tu.time_now() + " ERROR Unable to schedule " + name + " as " + time_set + " is missing from tracker")
+        
 
 #########################################################################################
 #Bot warm up procedure
@@ -349,10 +331,12 @@ async def on_ready():
         #Active
         await dailyexptask()
         await completedailytask()
-        await raidtask("crystalwispmsg", crystalwispmsg)
+        #await raidtask("crystalwispmsg", crystalwispmsg)
+        #await raidtask("Crystal Wisp", raidmsg, raidname="Crystal Wisp")
+        await schedule_raids()
 
         #Inactive
-        #await pingtabstask()
+        #None
         
         print('All Scheduled Notifications Queued')
 
@@ -362,7 +346,7 @@ async def on_ready():
 
 @bot.event
 async def on_error(event, *args, **kwargs):
-    print("Error?")
+    print(tu.time_now() + " Error ")
 
 #########################################################################################
 #General
@@ -747,7 +731,7 @@ async def oyassan(ctx):
 
 @raid.command(pass_context=True)
 async def suruto(ctx):
-    await raid_message(ctx, 'Suruto Time Slots', 'standard_raid', 'suruto()', 'https://media.discordapp.net/attachments/318376297963192321/405292226730524672/DUNlLv3U8AA9arN.png')
+    await raid_message(ctx, 'Suruto Time Slots', 'standard_raid', 'suruto()', 'https://sinoalice.wiki/images/2/2f/The_Baptism_of_a_Colossal_Soldier.png')
 	
 @raid.command(pass_context=True)
 async def crystalwisp(ctx):
@@ -1008,13 +992,13 @@ def getDatabaseConn(database_url):
     )
     return conn
 
+#This is a modified copy of bot.run from discord's default
 noKbInterrupt=True
-#This is a copy of bot.run from discord's default
 def runbot(bot, *args, **kwargs):
     try:
         bot.loop.run_until_complete(bot.start(*args, **kwargs))
     except KeyboardInterrupt:
-        print ("KeyboardInterrupt Exception")
+        print (tu.time_now() + " ERROR KeyboardInterrupt Exception")
         global noKbInterrupt
         noKbInterrupt=False
 		
@@ -1032,26 +1016,13 @@ def runbot(bot, *args, **kwargs):
             pass
         finally:
             bot.loop.close()
-#	except Exception as e:
-#	print ("Exception")
-#        bot.loop.run_until_complete(bot.logout())
-#        pending = asyncio.Task.all_tasks(loop=bot.loop)
-#        gathered = asyncio.gather(*pending, loop=bot.loop)
-#        try:
-#            gathered.cancel()
-#            bot.loop.run_until_complete(gathered)
-
-#            # we want to retrieve any exceptions to make sure that
-#            # they don't nag us about it being un-retrieved.
-#            gathered.exception()
-#        except:
-#            pass
-#        finally:
-#            bot.loop.close()
-#			raise e
+    except Exception as e:
+        print (tu.time_now() + "ERROR Generic Exception of type " + e.__class__.__name__)
+            
 while noKbInterrupt:
-	runbot(bot, token)
+    runbot(bot, token)
+    
 	
 
 #bot.run(token)
-print ("Bot Exit")
+print (tu.time_now() + " INFO Bot Exit")
