@@ -37,6 +37,11 @@ tracker = None
 ##############
 
 ##############
+# DailyTasks
+##############
+daily_tasks = {}
+
+##############
 #Channels
 ##############
 #TeaParty Channels
@@ -247,6 +252,63 @@ async def __raid_info(raidname, name, raidtype, img_url):
     #Save to file
     await updateConf()
     await bot.say("Conf Updated")
+
+@bot.command(description='Add to active_raid and trigger')
+async def __raid_add(name, displayname, time_set):
+    if tracker.hasEvent(time_set):
+        eventTimes = tracker.getEvent(time_set)
+
+        raid_tasks = []
+        for eventTime in eventTimes:
+            task = dt.DailyTask(raidmsg, name+" Raid @ "+eventTime.toJST(), eventTime, raidname=name)
+            await task.start()
+            raid_tasks.append(task)
+                
+            daily_tasks[name] = raid_tasks
+
+        await bot.say("Raid " + name + " Scheduled for " + time_set)
+    else:
+        print (tu.time_now() + " ERROR Unable to schedule " + name + " as " + time_set + " is missing from tracker")
+        await bot.say("ERROR Unable to schedule " + name + " as " + time_set + " is missing from tracker")
+
+    new_active_raid = {}
+    new_active_raid["name"] = displayname
+    new_active_raid["type"] = time_set
+    active_raids[name] = new_active_raid
+    
+    
+    #Save to file
+    await updateConf()
+    await bot.say("Conf Updated")
+
+@bot.command(description='Remove from active_raid and terminate')
+async def __raid_remove(name):
+    if name in daily_tasks:
+        print (tu.time_now() + " DEV Awaiting all DailyTask of " + name + " to stop")
+        await bot.say("Awaiting all DailyTask of " + name + " to stop")
+        
+        tasks_to_kill = daily_tasks[name]
+        for eaTask in tasks_to_kill:
+            try:
+                await eaTask.stop()
+            except:
+                pass
+        
+        del daily_tasks[name]
+
+    else:
+        print (tu.time_now() + " ERROR Unable to remove schedule of " + name + " as it does not exist")
+        await bot.say(" ERROR Unable to remove schedule of " + name + " as it does not exist")
+
+    if name in active_raids:
+        del active_raids[name]
+        
+        #Save to file
+        await updateConf()
+        await bot.say("Conf Updated")
+    else:
+        print (tu.time_now() + " WARNING " + name + " not in active_raid")
+        await bot.say("WARNING " + name + " not in active_raid")
     
 
 #########################################################################################
@@ -303,11 +365,15 @@ async def dailyexptask():
 async def raidmsg(*args, **kwargs):
     raidname = ''
     raidlogmsg = '_MISSING_ARGUEMENT_'
-    if 'raidname' in kwargs:
-        raidname = kwargs['raidname']
-        raidlogmsg = raidname+'_raid_msg'
+    print ("arg[0]:", args[0])
+    print ("kwords:", args[1]) # To remove later, DEBUG only
+    kwords = args[1] #args and kwargs are stored as a pair for some reason, so args[1] contains the kwargs
+    if 'raidname' in kwords:
+        raidname = kwords['raidname']
+    if 'raidlogmsg' in kwords:
+        raidlogmsg = kwords['raidlogmsg']+'_RAID_MSG'
         
-    await notifymssg(lobby_channel, raidname + 'Raid is up!', raidlogmsg)
+    await notifymsg(lobby_channel, raidname + ' Raid is up!', raidlogmsg)
 
 async def completedailymsg():
     await notifymsg(lobby_channel, 'Remember to claim your daily cleaning ticket!', 'completedailymsg()', delete=False, useEmbed=True)
@@ -319,12 +385,17 @@ async def completedailytask():
 
 async def schedule_raids():
     print ("Scheduling raids...")
-    for name, time_set in active_raids.items():
-        if tracker.hasEvent(time_set):
-            eventTimes = tracker.getEvent(time_set)
+    for name, details in active_raids.items():
+        if tracker.hasEvent(details["type"]):
+            eventTimes = tracker.getEvent(details["type"])
+
+            raid_tasks = []
             for eventTime in eventTimes:
-                task = dt.DailyTask(raidmsg, name+" Raid @ "+eventTime.toJST(), eventTime, raidname=name)
+                task = dt.DailyTask(raidmsg, details["name"]+" Raid @ "+eventTime.toJST(), eventTime, raidname=details["name"], raidlogmsg=name.replace(" ","_").upper())
                 await task.start()
+                raid_tasks.append(task)
+                
+            daily_tasks[name] = raid_tasks
         else:
             print (tu.time_now() + " ERROR Unable to schedule " + name + " as " + time_set + " is missing from tracker")
 
@@ -647,13 +718,17 @@ async def raid_old(ctx):
         #await bot.say('No Raids Active')
 
 @bot.group(pass_context=True, description='Shows details about a particular raid')
-async def raid(ctx, raidname="NONE"):
+async def raid(ctx, raidname="current"):
     """
     Check Raid timings
     """
     if raidname in raid_info:
         raid = raid_info[raidname]
         await raid_message(ctx, raid['name']+' Time Slots', raid['type'], "raid("+raidname+")", raid['img_url'])
+    elif raidname is "current":
+        for eaRaid in active_raids.keys():
+            raid = raid_info[eaRaid]
+            await raid_message(ctx, raid['name']+' Time Slots', raid['type'], "raid("+raidname+")", raid['img_url'])
     else:
         await bot.say("Available options: " + ', '.join('{}'.format(key) for key in raid_info.keys()))
     
@@ -905,7 +980,7 @@ async def congrats(ctx):
 async def goodluck(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/ChatStamp034s.png')
 
-@emote.command(pass_context=True)
+@emote.command(pass_context=True, aliases=['pouts'])
 async def pout(ctx):
     await bot.send_file(ctx.message.channel, 'emotes/ChatStamp035s.png')
 
