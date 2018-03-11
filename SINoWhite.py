@@ -260,7 +260,7 @@ async def __raid_add(name, displayname, time_set):
 
         raid_tasks = []
         for eventTime in eventTimes:
-            task = dt.DailyTask(raidmsg, name+" Raid @ "+eventTime.toJST(), eventTime, raidname=name)
+            task = dt.DailyTask(raidmsg, displayname+" Raid @ "+eventTime.toJST(), eventTime, raidname=name)
             await task.start()
             raid_tasks.append(task)
                 
