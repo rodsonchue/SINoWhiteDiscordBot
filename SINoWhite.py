@@ -33,6 +33,9 @@ locked_roles = []
 colo_cached_names = {}
 active_raids = {}
 raid_info = {}
+emoji_aliases={}
+base_emoji_map={}
+emoji_map={}
 tracker = None
 ##############
 
@@ -68,6 +71,9 @@ def load_config():
         global locked_roles
         global active_raids
         global raid_info
+        global emoji_aliases
+        global base_emoji_map
+        global emoji_map
         
         config = json.load(f)
         print ('------')
@@ -113,6 +119,17 @@ def load_config():
         else:
             print ("WARNING: No raid_info available")
 
+        if 'emoji' in config:
+            base_emoji_map = config['emoji']
+            emoji_map = base_emoji_map.copy()
+        if 'emoji_alias' in config:
+            emoji_aliases = config['emoji_alias']
+            for emoji, aliases in emoji_aliases.items():
+                for alias in aliases:
+                    emoji_map[alias] = emoji_map[emoji]
+
+        print ('emoji_map: ' + ', '.join('{}'.format(emoji_key) for emoji_key in emoji_map.keys()))
+
 def load_cogs():
     print('------')
     print ('Loading cogs')
@@ -149,7 +166,9 @@ def getDump():
                        'trackedEvents':trackedEvents,
                        'locked_roles':locked_roles,
                        'active_raids':active_raids,
-                       'raid_info':raid_info}, cls=tu.TodEncoder)
+                       'raid_info':raid_info,
+                       'emoji':base_emoji_map,
+                       'emoji_alias':emoji_aliases}, cls=tu.TodEncoder)
 
 async def updateConf():
     dump = getDump()
@@ -760,49 +779,49 @@ async def raid_message(ctx, title, raidName, func_name, image_url=None):
         await notifymsg(ctx.message.channel.id, "Sorry, an error has occured.", func_name, delete=True, useEmbed=True)
     
 
-@raid.command(pass_context=True)
-async def fafnir(ctx):
-    await raid_message(ctx, 'Fafnir Time Slots', 'standard_raid', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
-
-@raid.command(pass_context=True)
-async def fenrir(ctx):
-    await raid_message(ctx, 'Fenrir Time Slots', 'standard_raid', 'fenrir()', 'https://sinoalice.wiki/images/d/d7/The_Nightmare_that_Haunts_the_Hills.jpg')
-
-@raid.command(pass_context=True)
-async def ogre(ctx):
-    await raid_message(ctx, 'Ogre Time Slots', 'standard_raid', 'ogre()', 'https://sinoalice.wiki/images/2/2f/The_Nightmare_that_Haunts_the_Forests.png')
-
-@raid.command(pass_context=True)
-async def spider(ctx):
-    await raid_message(ctx, 'Spider Time Slots', 'standard_raid', 'spider()', 'https://sinoalice.wiki/images/4/45/Twin_Fangs_of_Ptomaine_Poison.png')
-
-@raid.command(pass_context=True)
-async def midgard(ctx):
-    await raid_message(ctx, 'Midgardsormr Time Slots', 'standard_raid', 'midgard()', 'https://sinoalice.wiki/images/1/14/BannerL020.png')
-
-@raid.command(pass_context=True)
-async def ziz(ctx):
-    await raid_message(ctx, 'Ziz Time Slots', 'standard_raid', 'ziz()', 'https://sinoalice.wiki/images/c/cd/Wing_of_Fate.jpg')
-
-@raid.command(pass_context=True)
-async def rafflesia(ctx):
-    await raid_message(ctx, 'Rafflesia Time Slots', 'standard_raid', 'rafflesia()', 'https://sinoalice.wiki/images/8/8c/Baptism_of_Fantasies.jpg')
-
-@raid.command(pass_context=True)
-async def nami(ctx):
-    await raid_message(ctx, 'Nami Time Slots', 'standard_raid', 'nami()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
-
-@raid.command(pass_context=True)
-async def oyassan(ctx):
-    await raid_message(ctx, 'Oyassan Time Slots', 'standard_raid', 'oyassan()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
-
-@raid.command(pass_context=True)
-async def suruto(ctx):
-    await raid_message(ctx, 'Suruto Time Slots', 'standard_raid', 'suruto()', 'https://sinoalice.wiki/images/2/2f/The_Baptism_of_a_Colossal_Soldier.png')
-	
-@raid.command(pass_context=True)
-async def crystalwisp(ctx):
-    await raid_message(ctx, 'Crystal Wisp Time Slots', 'standard_raid', 'crystalwisp()', 'https://cdn.discordapp.com/attachments/318376297963192321/415131198243864587/DWYvvk9V4AAvEYv.jpg')
+##@raid.command(pass_context=True)
+##async def fafnir(ctx):
+##    await raid_message(ctx, 'Fafnir Time Slots', 'standard_raid', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
+##
+##@raid.command(pass_context=True)
+##async def fenrir(ctx):
+##    await raid_message(ctx, 'Fenrir Time Slots', 'standard_raid', 'fenrir()', 'https://sinoalice.wiki/images/d/d7/The_Nightmare_that_Haunts_the_Hills.jpg')
+##
+##@raid.command(pass_context=True)
+##async def ogre(ctx):
+##    await raid_message(ctx, 'Ogre Time Slots', 'standard_raid', 'ogre()', 'https://sinoalice.wiki/images/2/2f/The_Nightmare_that_Haunts_the_Forests.png')
+##
+##@raid.command(pass_context=True)
+##async def spider(ctx):
+##    await raid_message(ctx, 'Spider Time Slots', 'standard_raid', 'spider()', 'https://sinoalice.wiki/images/4/45/Twin_Fangs_of_Ptomaine_Poison.png')
+##
+##@raid.command(pass_context=True)
+##async def midgard(ctx):
+##    await raid_message(ctx, 'Midgardsormr Time Slots', 'standard_raid', 'midgard()', 'https://sinoalice.wiki/images/1/14/BannerL020.png')
+##
+##@raid.command(pass_context=True)
+##async def ziz(ctx):
+##    await raid_message(ctx, 'Ziz Time Slots', 'standard_raid', 'ziz()', 'https://sinoalice.wiki/images/c/cd/Wing_of_Fate.jpg')
+##
+##@raid.command(pass_context=True)
+##async def rafflesia(ctx):
+##    await raid_message(ctx, 'Rafflesia Time Slots', 'standard_raid', 'rafflesia()', 'https://sinoalice.wiki/images/8/8c/Baptism_of_Fantasies.jpg')
+##
+##@raid.command(pass_context=True)
+##async def nami(ctx):
+##    await raid_message(ctx, 'Nami Time Slots', 'standard_raid', 'nami()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
+##
+##@raid.command(pass_context=True)
+##async def oyassan(ctx):
+##    await raid_message(ctx, 'Oyassan Time Slots', 'standard_raid', 'oyassan()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
+##
+##@raid.command(pass_context=True)
+##async def suruto(ctx):
+##    await raid_message(ctx, 'Suruto Time Slots', 'standard_raid', 'suruto()', 'https://sinoalice.wiki/images/2/2f/The_Baptism_of_a_Colossal_Soldier.png')
+##	
+##@raid.command(pass_context=True)
+##async def crystalwisp(ctx):
+##    await raid_message(ctx, 'Crystal Wisp Time Slots', 'standard_raid', 'crystalwisp()', 'https://cdn.discordapp.com/attachments/318376297963192321/415131198243864587/DWYvvk9V4AAvEYv.jpg')
 
 #########################################################################################
 #Dice rolling
@@ -837,212 +856,14 @@ async def randp(ctx, *names : str):
 #########################################################################################
 #Emotes
 @bot.group(pass_context=True, description='See emote options by invoking the help command', aliases=['e','emo'])
-async def emote(ctx):
+async def emote(ctx, emoji : str):
     """
     Use Emotes
     """
-    if ctx.invoked_subcommand is None:
-        await bot.say('**' + command_prefix + 'help emote** for options')
-
-@emote.command(pass_context=True)
-async def thanks(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/en/chatstamp001_es.png')
-
-@emote.command(pass_context=True, aliases=['shikatanai,shikatanonai,shikataganai'])
-async def unavoidable(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp002s.png')
-
-@emote.command(pass_context=True)
-async def yoroshiku(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp003s.png')
-
-@emote.command(pass_context=True)
-async def damn(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp004s.png')
-
-@emote.command(pass_context=True)
-async def weak(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp005s.png')
-
-@emote.command(pass_context=True)
-async def oops(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp006s.png')
-
-@emote.command(pass_context=True)
-async def hardcarry(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp007s.png')
-
-@emote.command(pass_context=True)
-async def yandere(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp008s.png')
-
-@emote.command(pass_context=True)
-async def ok(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/en/chatstamp009_es.png')
-
-@emote.command(pass_context=True)
-async def wants(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp010s.png')
-
-@emote.command(pass_context=True)
-async def rekt(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp011s.png')
-
-@emote.command(pass_context=True, aliases=['otsukare'])
-async def oatscurry(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp012s.png')
-
-@emote.command(pass_context=True)
-async def rip(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp013s.png')
-
-@emote.command(pass_context=True)
-async def sleep(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp014s.png')
-
-@emote.command(pass_context=True)
-async def yay(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp015s.png')
-
-@emote.command(pass_context=True)
-async def yes(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp016s.png')
-
-@emote.command(pass_context=True)
-async def masaka(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp017s.png')
-
-@emote.command(pass_context=True)
-async def annoyed(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp018s.png')
-
-@emote.command(pass_context=True)
-async def wow(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp019s.png')
-
-@emote.command(pass_context=True)
-async def angry(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp020s.png')
-
-@emote.command(pass_context=True)
-async def noo(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp021s.png')
-
-@emote.command(pass_context=True)
-async def peace(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp022s.png')
-
-@emote.command(pass_context=True)
-async def forgetthat(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp023s.png')
-
-@emote.command(pass_context=True, aliases=['sorrymasen','sumanai'])
-async def sorry(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp024s.png')
-
-@emote.command(pass_context=True)
-async def teehee(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp025s.png')
-
-@emote.command(pass_context=True)
-async def guessso(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp026s.png')
-
-@emote.command(pass_context=True)
-async def thatsit(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp027s.png')
-
-@emote.command(pass_context=True)
-async def wut(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp028s.png')
-
-@emote.command(pass_context=True)
-async def cmi(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp029s.png')
-
-@emote.command(pass_context=True)
-async def trolol(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp030s.png')
-
-@emote.command(pass_context=True)
-async def cheerup(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp031s.png')
-
-@emote.command(pass_context=True)
-async def helpme(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp032s.png')
-
-@emote.command(pass_context=True)
-async def congrats(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp033s.png')
-
-@emote.command(pass_context=True)
-async def goodluck(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp034s.png')
-
-@emote.command(pass_context=True, aliases=['pouts'])
-async def pout(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp035s.png')
-
-@emote.command(pass_context=True)
-async def creepyhello(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp036s.png')
-
-@emote.command(pass_context=True)
-async def byebye(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp037s.png')
-
-@emote.command(pass_context=True)
-async def approve(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp038s.png')
-
-@emote.command(pass_context=True)
-async def pleasehelp(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp039s.png')
-
-@emote.command(pass_context=True)
-async def brb(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/ChatStamp040s.png')
-
-@emote.command(pass_context=True)
-async def f1(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/F1_alt.png')
-
-@emote.command(pass_context=True)
-async def f2(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/F2_alt.png')
-
-@emote.command(pass_context=True)
-async def f3(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/F3_alt.png')
-    
-@emote.command(pass_context=True)
-async def f4(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/F4_alt.png')
-
-@emote.command(pass_context=True)
-async def f5(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/F5_alt.png')
-
-@emote.command(pass_context=True)
-async def f6(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/F6_alt.png')
-
-@emote.command(pass_context=True)
-async def f7(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/F7_alt.png')
-
-@emote.command(pass_context=True)
-async def disgusting(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/disgusting.png')
-
-@emote.command(pass_context=True)
-async def padoru(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/padoru.gif')
-
-@emote.command(pass_context=True)
-async def padorufast(ctx):
-    await bot.send_file(ctx.message.channel, 'emotes/other/padoru5x.gif')
+    if emoji in emoji_map.keys():
+        await bot.send_file(ctx.message.channel, emoji_map[emoji])
+    else:
+        print ("Emoji List:"+ ', '.join('{}'.format(emoji_key) for emoji_key in sorted(emoji_map.keys())))
     
 #########################################################################################
 #Database helper function
@@ -1108,7 +929,9 @@ def runbot(bot, *args, **kwargs):
         print (tu.time_now() + " ERROR KeyboardInterrupt Exception")
         global noKbInterrupt
         noKbInterrupt=False
-		
+    except Exception as e:
+        print (tu.time_now() + "ERROR Generic Exception of type " + e.__class__.__name__)
+    finally:
         bot.loop.run_until_complete(bot.logout())
         pending = asyncio.Task.all_tasks(loop=bot.loop)
         gathered = asyncio.gather(*pending, loop=bot.loop)
@@ -1123,8 +946,6 @@ def runbot(bot, *args, **kwargs):
             pass
         finally:
             bot.loop.close()
-    except Exception as e:
-        print (tu.time_now() + "ERROR Generic Exception of type " + e.__class__.__name__)
 
 #########################################################################################
 #Actual Execution of Bot
