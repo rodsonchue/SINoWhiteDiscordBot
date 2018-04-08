@@ -168,7 +168,7 @@ def getDump():
                        'active_raids':active_raids,
                        'raid_info':raid_info,
                        'emoji':base_emoji_map,
-                       'emoji_alias':emoji_aliases}, cls=tu.TodEncoder)
+                       'emoji_alias':emoji_aliases}, sort_keys=True, indent=4, cls=tu.TodEncoder)
 
 async def updateConf():
     dump = getDump()
@@ -279,7 +279,7 @@ async def __raid_add(name, displayname, time_set):
 
         raid_tasks = []
         for eventTime in eventTimes:
-            task = dt.DailyTask(raidmsg, displayname+" Raid @ "+eventTime.toJST(), eventTime, raidname=name)
+            task = dt.DailyTask(raidmsg, displayname+" Raid @ "+eventTime.toJST(), eventTime, raidname=displayname)
             await task.start()
             raid_tasks.append(task)
                 
@@ -777,51 +777,6 @@ async def raid_message(ctx, title, raidName, func_name, image_url=None):
         await bot.send_message(ctx.message.channel, embed=embed_msg)
     else:
         await notifymsg(ctx.message.channel.id, "Sorry, an error has occured.", func_name, delete=True, useEmbed=True)
-    
-
-##@raid.command(pass_context=True)
-##async def fafnir(ctx):
-##    await raid_message(ctx, 'Fafnir Time Slots', 'standard_raid', 'fafnir()', 'https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png')
-##
-##@raid.command(pass_context=True)
-##async def fenrir(ctx):
-##    await raid_message(ctx, 'Fenrir Time Slots', 'standard_raid', 'fenrir()', 'https://sinoalice.wiki/images/d/d7/The_Nightmare_that_Haunts_the_Hills.jpg')
-##
-##@raid.command(pass_context=True)
-##async def ogre(ctx):
-##    await raid_message(ctx, 'Ogre Time Slots', 'standard_raid', 'ogre()', 'https://sinoalice.wiki/images/2/2f/The_Nightmare_that_Haunts_the_Forests.png')
-##
-##@raid.command(pass_context=True)
-##async def spider(ctx):
-##    await raid_message(ctx, 'Spider Time Slots', 'standard_raid', 'spider()', 'https://sinoalice.wiki/images/4/45/Twin_Fangs_of_Ptomaine_Poison.png')
-##
-##@raid.command(pass_context=True)
-##async def midgard(ctx):
-##    await raid_message(ctx, 'Midgardsormr Time Slots', 'standard_raid', 'midgard()', 'https://sinoalice.wiki/images/1/14/BannerL020.png')
-##
-##@raid.command(pass_context=True)
-##async def ziz(ctx):
-##    await raid_message(ctx, 'Ziz Time Slots', 'standard_raid', 'ziz()', 'https://sinoalice.wiki/images/c/cd/Wing_of_Fate.jpg')
-##
-##@raid.command(pass_context=True)
-##async def rafflesia(ctx):
-##    await raid_message(ctx, 'Rafflesia Time Slots', 'standard_raid', 'rafflesia()', 'https://sinoalice.wiki/images/8/8c/Baptism_of_Fantasies.jpg')
-##
-##@raid.command(pass_context=True)
-##async def nami(ctx):
-##    await raid_message(ctx, 'Nami Time Slots', 'standard_raid', 'nami()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
-##
-##@raid.command(pass_context=True)
-##async def oyassan(ctx):
-##    await raid_message(ctx, 'Oyassan Time Slots', 'standard_raid', 'oyassan()', 'https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg')
-##
-##@raid.command(pass_context=True)
-##async def suruto(ctx):
-##    await raid_message(ctx, 'Suruto Time Slots', 'standard_raid', 'suruto()', 'https://sinoalice.wiki/images/2/2f/The_Baptism_of_a_Colossal_Soldier.png')
-##	
-##@raid.command(pass_context=True)
-##async def crystalwisp(ctx):
-##    await raid_message(ctx, 'Crystal Wisp Time Slots', 'standard_raid', 'crystalwisp()', 'https://cdn.discordapp.com/attachments/318376297963192321/415131198243864587/DWYvvk9V4AAvEYv.jpg')
 
 #########################################################################################
 #Dice rolling
@@ -863,7 +818,7 @@ async def emote(ctx, emoji : str):
     if emoji in emoji_map.keys():
         await bot.send_file(ctx.message.channel, emoji_map[emoji])
     else:
-        print ("Emoji List:"+ ', '.join('{}'.format(emoji_key) for emoji_key in sorted(emoji_map.keys())))
+        await bot.say("Emoji List:"+ ', '.join('{}'.format(emoji_key) for emoji_key in sorted(emoji_map.keys())))
     
 #########################################################################################
 #Database helper function
