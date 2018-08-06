@@ -272,7 +272,7 @@ async def __raid_info(raidname, name, raidtype, img_url):
     await updateConf()
     await bot.say("Conf Updated")
 
-@bot.command(description='Add to active_raid and trigger')
+@bot.command(description='Add to active_raid and trigger', hidden=True)
 async def __raid_add(name, displayname, time_set):
     if tracker.hasEvent(time_set):
         eventTimes = tracker.getEvent(time_set)
@@ -300,7 +300,7 @@ async def __raid_add(name, displayname, time_set):
     await updateConf()
     await bot.say("Conf Updated")
 
-@bot.command(description='Remove from active_raid and terminate')
+@bot.command(description='Remove from active_raid and terminate', hidden=True)
 async def __raid_remove(name):
     if name in daily_tasks:
         print (tu.time_now() + " DEV Awaiting all DailyTask of " + name + " to stop")
@@ -725,16 +725,6 @@ async def exp():
         await bot.say(str(hours)+' hrs and '+str(minutes) +' mins till start of next exp window')
     else:
         await bot.say(str(minutes) +' mins till start of next exp window')
-
-@bot.group(pass_context=True, description='Available options: fafnir, fenrir, ogre, spider, midgard, ziz, rafflesia, oyassan, nami')
-async def raid_old(ctx):
-    """
-    Check Raid timings
-    """
-    if ctx.invoked_subcommand is None:
-        await raid_message(ctx, 'Crystal Wisp Time Slots', 'standard_raid', 'crystalwisp()', 'https://cdn.discordapp.com/attachments/318376297963192321/415131198243864587/DWYvvk9V4AAvEYv.jpg')
-        #await bot.say('**' + command_prefix + 'help raid** for options')
-        #await bot.say('No Raids Active')
 
 @bot.group(pass_context=True, description='Shows details about a particular raid')
 async def raid(ctx, raidname="current"):

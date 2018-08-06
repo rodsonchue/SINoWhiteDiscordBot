@@ -1,1 +1,293 @@
-{"bot_test_channel": "386175668926414851", "command_prefix": "~", "locked_roles": ["Bot Master"], "trackedEvents": {"exp": [[16, 0], [22, 30], [3, 0], [10, 30], [13, 30]], "standard_raid": [[16, 30], [23, 30], [3, 0], [11, 30], [14, 30]]}, "raid_info": {"fenrir": {"img_url": "https://sinoalice.wiki/images/d/d7/The_Nightmare_that_Haunts_the_Hills.jpg", "type": "standard_raid", "name": "Fenrir"}, "ziz": {"img_url": "https://sinoalice.wiki/images/c/cd/Wing_of_Fate.jpg", "type": "standard_raid", "name": "Ziz"}, "ogre": {"img_url": "https://sinoalice.wiki/images/2/2f/The_Nightmare_that_Haunts_the_Forests.png", "type": "standard_raid", "name": "Ogre"}, "spider": {"img_url": "https://sinoalice.wiki/images/4/45/Twin_Fangs_of_Ptomaine_Poison.png", "type": "standard_raid", "name": "Spider"}, "rafflesia": {"img_url": "https://sinoalice.wiki/images/8/8c/Baptism_of_Fantasies.jpg", "type": "standard_raid", "name": "Rafflesia"}, "crystalwisp": {"img_url": "https://cdn.discordapp.com/attachments/318376297963192321/415131198243864587/DWYvvk9V4AAvEYv.jpg", "type": "standard_raid", "name": "Crystal Wisp"}, "belial": {"img_url": "https://cdn.discordapp.com/attachments/318376297963192321/425262537995714560/DYpQtehV4AAc0B6.png", "type": "standard_raid", "name": "Belial"}, "midgard": {"img_url": "https://sinoalice.wiki/images/1/14/BannerL020.png", "type": "standard_raid", "name": "Midgardsormr"}, "fafnir": {"img_url": "https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png", "type": "standard_raid", "name": "Fafnir"}, "nami": {"img_url": "https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg", "type": "standard_raid", "name": "Nami"}, "oyassan": {"img_url": "https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg", "type": "standard_raid", "name": "Oyassan"}, "surtr": {"img_url": "https://sinoalice.wiki/images/2/2f/The_Baptism_of_a_Colossal_Soldier.png", "type": "standard_raid", "name": "Surtr"}}, "lobby_channel": "386169915306016770", "active_raids": {"belial": {"type": "standard_raid", "name": "Belial"}}, "emoji":{"thanks":"emotes/en/chatstamp001_es.png", "unavoidable":"emotes/ChatStamp002s.png", "yoroshiku":"emotes/ChatStamp003s.png", "damn":"emotes/ChatStamp004s.png", "weak":"emotes/ChatStamp005s.png", "oops":"emotes/ChatStamp006s.png", "hardcarry":"emotes/ChatStamp007s.png", "yandere":"emotes/ChatStamp008s.png", "okay":"emotes/en/chatstamp009_es.png", "wants":"emotes/ChatStamp010s.png", "rekt":"emotes/ChatStamp011s.png", "oatscurry":"emotes/ChatStamp012s.png", "rip":"emotes/ChatStamp013s.png", "sleep":"emotes/ChatStamp014s.png", "yay":"emotes/ChatStamp015s.png", "yes":"emotes/ChatStamp016s.png", "masaka":"emotes/ChatStamp017s.png", "annoyed":"emotes/ChatStamp018s.png", "wow":"emotes/ChatStamp019s.png", "angry":"emotes/ChatStamp020s.png", "noo":"emotes/ChatStamp021s.png", "peace":"emotes/ChatStamp022s.png", "forgetthat":"emotes/ChatStamp023s.png", "sorry":"emotes/ChatStamp024s.png", "teehee":"emotes/ChatStamp025s.png", "guessso":"emotes/ChatStamp026s.png", "thatsit":"emotes/ChatStamp027s.png", "wut":"emotes/ChatStamp028s.png", "cmi":"emotes/ChatStamp029s.png", "trolol":"emotes/ChatStamp030s.png", "cheerup":"emotes/ChatStamp031s.png", "helpme":"emotes/ChatStamp032s.png", "congrats":"emotes/ChatStamp033s.png", "goodluck":"emotes/ChatStamp034s.png", "pout":"emotes/ChatStamp035s.png", "creepyhello":"emotes/ChatStamp036s.png", "byebye":"emotes/ChatStamp037s.png", "approve":"emotes/ChatStamp038s.png", "pleasehelp":"emotes/ChatStamp039s.png", "brb":"emotes/ChatStamp040s.png", "f1":"emotes/other/F1_alt.png", "f2":"emotes/other/F2_alt.png", "f3":"emotes/other/F3_alt.png", "f4":"emotes/other/F4_alt.png", "f5":"emotes/other/F5_alt.png", "f6":"emotes/other/F6_alt.png", "f7":"emotes/other/F7_alt.png", "disgusting":"emotes/other/disgusting.png", "padoru":"emotes/other/padoru.gif", "padorufast":"emotes/other/padoru5x.gif", "pokelabo":"emotes/other/pokelabo.png", "hoppyblob":"emotes/other/hoppyblob.gif", "kannaPls":"emotes/other/kannaPls.gif"}, "emoji_alias":{"unavoidable":["shikatanai","shikatanonai","shikataganai"], "okay":["ok"], "oatscurry":["otsukare"], "sorry":["sorrymasen", "sumanai"], "helpme":["help","tasukete","tuskete"], "pout":["pouts"], "approve":["approves","unun"], "pokelabo":["pokebola","poke"], "kannaPls":["kannapls"]}}
+{
+    "active_raids": {
+        "basilisk_ext": {
+            "name": "Basilisk",
+            "type": "extended_raid"
+        }
+    },
+    "bot_test_channel": "462892231104397314",
+    "command_prefix": "~",
+    "emoji": {
+        "angry": "emotes/ChatStamp020s.png",
+        "annoyed": "emotes/ChatStamp018s.png",
+        "approve": "emotes/ChatStamp038s.png",
+        "brb": "emotes/ChatStamp040s.png",
+        "byebye": "emotes/ChatStamp037s.png",
+        "cheerup": "emotes/ChatStamp031s.png",
+        "cmi": "emotes/ChatStamp029s.png",
+        "congrats": "emotes/ChatStamp033s.png",
+        "creepyhello": "emotes/ChatStamp036s.png",
+        "damn": "emotes/ChatStamp004s.png",
+        "disgusting": "emotes/other/disgusting.png",
+        "f1": "emotes/other/F1_alt.png",
+        "f2": "emotes/other/F2_alt.png",
+        "f3": "emotes/other/F3_alt.png",
+        "f4": "emotes/other/F4_alt.png",
+        "f5": "emotes/other/F5_alt.png",
+        "f6": "emotes/other/F6_alt.png",
+        "f7": "emotes/other/F7_alt.png",
+        "forgetthat": "emotes/ChatStamp023s.png",
+        "goodluck": "emotes/ChatStamp034s.png",
+        "guessso": "emotes/ChatStamp026s.png",
+        "hardcarry": "emotes/ChatStamp007s.png",
+        "helpme": "emotes/ChatStamp032s.png",
+        "hoppyblob": "emotes/other/hoppyblob.gif",
+        "kannaPls": "emotes/other/kannaPls.gif",
+        "masaka": "emotes/ChatStamp017s.png",
+        "noo": "emotes/ChatStamp021s.png",
+        "oatscurry": "emotes/ChatStamp012s.png",
+        "okay": "emotes/en/chatstamp009_es.png",
+        "oops": "emotes/ChatStamp006s.png",
+        "padoru": "emotes/other/padoru.gif",
+        "padorufast": "emotes/other/padoru5x.gif",
+        "peace": "emotes/ChatStamp022s.png",
+        "pleasehelp": "emotes/ChatStamp039s.png",
+        "pokelabo": "emotes/other/pokelabo.png",
+        "pout": "emotes/ChatStamp035s.png",
+        "rekt": "emotes/ChatStamp011s.png",
+        "rip": "emotes/ChatStamp013s.png",
+        "sleep": "emotes/ChatStamp014s.png",
+        "sorry": "emotes/ChatStamp024s.png",
+        "teehee": "emotes/ChatStamp025s.png",
+        "thanks": "emotes/en/chatstamp001_es.png",
+        "thatsit": "emotes/ChatStamp027s.png",
+        "trolol": "emotes/ChatStamp030s.png",
+        "unavoidable": "emotes/ChatStamp002s.png",
+        "wants": "emotes/ChatStamp010s.png",
+        "weak": "emotes/ChatStamp005s.png",
+        "wow": "emotes/ChatStamp019s.png",
+        "wut": "emotes/ChatStamp028s.png",
+        "yandere": "emotes/ChatStamp008s.png",
+        "yay": "emotes/ChatStamp015s.png",
+        "yes": "emotes/ChatStamp016s.png",
+        "yoroshiku": "emotes/ChatStamp003s.png"
+    },
+    "emoji_alias": {
+        "approve": [
+            "approves",
+            "unun"
+        ],
+        "helpme": [
+            "help",
+            "tasukete",
+            "tuskete"
+        ],
+        "kannaPls": [
+            "kannapls"
+        ],
+        "oatscurry": [
+            "otsukare"
+        ],
+        "okay": [
+            "ok"
+        ],
+        "pokelabo": [
+            "pokebola",
+            "poke"
+        ],
+        "pout": [
+            "pouts"
+        ],
+        "sorry": [
+            "sorrymasen",
+            "sumanai"
+        ],
+        "unavoidable": [
+            "shikatanai",
+            "shikatanonai",
+            "shikataganai"
+        ]
+    },
+    "lobby_channel": "462892231104397314",
+    "locked_roles": [
+        "Exco"
+    ],
+    "raid_info": {
+        "basilisk_ext": {
+            "img_url": "https://pbs.twimg.com/media/DjGWaAAU4AAAzck.jpg:large",
+            "name": "Basilisk",
+            "type": "extended_raid"
+        },
+        "belial": {
+            "img_url": "https://cdn.discordapp.com/attachments/318376297963192321/425262537995714560/DYpQtehV4AAc0B6.png",
+            "name": "Belial",
+            "type": "standard_raid"
+        },
+        "crystalwisp": {
+            "img_url": "https://cdn.discordapp.com/attachments/318376297963192321/415131198243864587/DWYvvk9V4AAvEYv.jpg",
+            "name": "Crystal Wisp",
+            "type": "standard_raid"
+        },
+        "fafnir": {
+            "img_url": "https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png",
+            "name": "Fafnir",
+            "type": "standard_raid"
+        },
+        "fafnir_ext": {
+            "img_url": "https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png",
+            "name": "Fafnir (Extended)",
+            "type": "extended_raid"
+        },
+        "fenrir": {
+            "img_url": "https://sinoalice.wiki/images/d/d7/The_Nightmare_that_Haunts_the_Hills.jpg",
+            "name": "Fenrir",
+            "type": "standard_raid"
+        },
+        "fenrir_ext": {
+            "img_url": "https://sinoalice.wiki/images/d/d7/The_Nightmare_that_Haunts_the_Hills.jpg",
+            "name": "Fenrir (Extended)",
+            "type": "extended_raid"
+        },
+        "gremlin": {
+            "img_url": "https://img.altema.jp/sinoalice/uploads/2018/05/2018y05m17d_1353436116.jpg",
+            "name": "Gremlin",
+            "type": "standard_raid"
+        },
+        "midgard": {
+            "img_url": "https://sinoalice.wiki/images/1/14/BannerL020.png",
+            "name": "Midgardsormr",
+            "type": "standard_raid"
+        },
+        "midgard_ext": {
+            "img_url": "https://sinoalice.wiki/images/1/14/BannerL020.png",
+            "name": "Midgardsormr (Extended)",
+            "type": "extended_raid"
+        },
+        "nami": {
+            "img_url": "https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg",
+            "name": "Nami",
+            "type": "standard_raid"
+        },
+        "ogre": {
+            "img_url": "https://sinoalice.wiki/images/2/2f/The_Nightmare_that_Haunts_the_Forests.png",
+            "name": "Ogre",
+            "type": "standard_raid"
+        },
+        "ogre_ext": {
+            "img_url": "https://sinoalice.wiki/images/2/2f/The_Nightmare_that_Haunts_the_Forests.png",
+            "name": "Ogre (Extended)",
+            "type": "extended_raid"
+        },
+        "oyassan": {
+            "img_url": "https://sinoalice.wiki/images/4/47/Mad_Party_of_the_Fishkin.jpg",
+            "name": "Oyassan",
+            "type": "standard_raid"
+        },
+        "rafflesia": {
+            "img_url": "https://sinoalice.wiki/images/8/8c/Baptism_of_Fantasies.jpg",
+            "name": "Rafflesia",
+            "type": "standard_raid"
+        },
+        "seir": {
+            "img_url": "https://sinoalice.game-db.tw/images/card/CardS2105.png",
+            "name": "Seir",
+            "type": "extended_raid"
+        },
+        "slade": {
+            "img_url": "https://img.altema.jp/sinoalice/uploads/2018/04/2018y04m17d_2036450664.jpg",
+            "name": "Slade",
+            "type": "standard_raid"
+        },
+        "spider": {
+            "img_url": "https://sinoalice.wiki/images/4/45/Twin_Fangs_of_Ptomaine_Poison.png",
+            "name": "Spider",
+            "type": "standard_raid"
+        },
+        "spider_ext": {
+            "img_url": "https://sinoalice.wiki/images/4/45/Twin_Fangs_of_Ptomaine_Poison.png",
+            "name": "Spider",
+            "type": "extended_raid"
+        },
+        "surtr": {
+            "img_url": "https://sinoalice.wiki/images/2/2f/The_Baptism_of_a_Colossal_Soldier.png",
+            "name": "Surtr",
+            "type": "standard_raid"
+        },
+        "ziz": {
+            "img_url": "https://sinoalice.wiki/images/c/cd/Wing_of_Fate.jpg",
+            "name": "Ziz",
+            "type": "standard_raid"
+        },
+        "ziz_ext": {
+            "img_url": "https://sinoalice.wiki/images/c/cd/Wing_of_Fate.jpg",
+            "name": "Ziz (Extended)",
+            "type": "extended_raid"
+        }
+    },
+    "trackedEvents": {
+        "exp": [
+            [
+                16,
+                0
+            ],
+            [
+                22,
+                30
+            ],
+            [
+                3,
+                0
+            ],
+            [
+                10,
+                30
+            ],
+            [
+                13,
+                30
+            ]
+        ],
+        "extended_raid": [
+            [
+                16,
+                30
+            ],
+            [
+                17,
+                30
+            ],
+            [
+                23,
+                30
+            ],
+            [
+                3,
+                0
+            ],
+            [
+                8,
+                30
+            ],
+            [
+                11,
+                30
+            ],
+            [
+                14,
+                30
+            ]
+        ],
+        "standard_raid": [
+            [
+                16,
+                30
+            ],
+            [
+                23,
+                30
+            ],
+            [
+                3,
+                0
+            ],
+            [
+                11,
+                30
+            ],
+            [
+                14,
+                30
+            ]
+        ]
+    }
+}
