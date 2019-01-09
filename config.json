@@ -1,7 +1,7 @@
 {
     "active_raids": {
-        "basilisk_ext": {
-            "name": "Basilisk",
+        "fafnir_ext": {
+            "name": "",
             "type": "extended_raid"
         }
     },
@@ -102,6 +102,15 @@
     "locked_roles": [
         "Exco"
     ],
+    "notify_list_daily_mission": [
+        "462892231104397314"
+    ],
+    "notify_list_exp": [
+        "462892231104397314"
+    ],
+    "notify_list_raid": [
+        "462892231104397314"
+    ],
     "raid_info": {
         "basilisk_ext": {
             "img_url": "https://pbs.twimg.com/media/DjGWaAAU4AAAzck.jpg:large",
@@ -113,10 +122,25 @@
             "name": "Belial",
             "type": "standard_raid"
         },
+        "cerberus": {
+            "img_url": "https://webcontents-sinoalice.pokelabo.jp/web/img/alice/announce/e7b174205fb3e16dbefde99003ff986b.png",
+            "name": "Cerberus",
+            "type": "extended_raid"
+        },
         "crystalwisp": {
             "img_url": "https://cdn.discordapp.com/attachments/318376297963192321/415131198243864587/DWYvvk9V4AAvEYv.jpg",
             "name": "Crystal Wisp",
             "type": "standard_raid"
+        },
+        "crystalwisp_ext": {
+            "img_url": "https://cdn.discordapp.com/attachments/318376297963192321/415131198243864587/DWYvvk9V4AAvEYv.jpg",
+            "name": "Crystal Wisp",
+            "type": "extended_raid"
+        },
+        "emil": {
+            "img_url": "https://pbs.twimg.com/media/DkC20vwVAAAuqQh.jpg",
+            "name": "Emil",
+            "type": "extended_raid"
         },
         "fafnir": {
             "img_url": "https://sinoalice.wiki/images/c/cd/The_Flaming_Dragon_that_Haunts_the_Abyss.png",
@@ -178,6 +202,11 @@
             "name": "Rafflesia",
             "type": "standard_raid"
         },
+        "rafflesia_ext": {
+            "img_url": "https://sinoalice.wiki/images/8/8c/Baptism_of_Fantasies.jpg",
+            "name": "Rafflesia",
+            "type": "extended_raid"
+        },
         "seir": {
             "img_url": "https://sinoalice.game-db.tw/images/card/CardS2105.png",
             "name": "Seir",
@@ -187,6 +216,11 @@
             "img_url": "https://img.altema.jp/sinoalice/uploads/2018/04/2018y04m17d_2036450664.jpg",
             "name": "Slade",
             "type": "standard_raid"
+        },
+        "slade_ext": {
+            "img_url": "https://img.altema.jp/sinoalice/uploads/2018/04/2018y04m17d_2036450664.jpg",
+            "name": "Slade (Extended)",
+            "type": "extended_raid"
         },
         "spider": {
             "img_url": "https://sinoalice.wiki/images/4/45/Twin_Fangs_of_Ptomaine_Poison.png",
@@ -202,6 +236,16 @@
             "img_url": "https://sinoalice.wiki/images/2/2f/The_Baptism_of_a_Colossal_Soldier.png",
             "name": "Surtr",
             "type": "standard_raid"
+        },
+        "surtr_ext": {
+            "img_url": "https://sinoalice.wiki/images/2/2f/The_Baptism_of_a_Colossal_Soldier.png",
+            "name": "Surtr",
+            "type": "extended_raid"
+        },
+        "ufo": {
+            "img_url": "https://webcontents-sinoalice.pokelabo.jp/web/img/alice/announce/a6a361b936a20efbd2749c33bed7ba45.png",
+            "name": "UFO",
+            "type": "extended_raid"
         },
         "ziz": {
             "img_url": "https://sinoalice.wiki/images/c/cd/Wing_of_Fate.jpg",
@@ -289,5 +333,6 @@
                 30
             ]
         ]
-    }
+    },
+    "wolfie_channel": "457889312395100161"
 }

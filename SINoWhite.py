@@ -25,18 +25,22 @@ config_filepath = 'config.json'
 
 ##############
 #Vars
-token = os.environ['SINOALICE_TOKEN'] #Token is taken from computer's env for security
-command_prefix = ''
-description = 'SINoWhite bot for TeaParty'
-trackedEvents = {}
-locked_roles = []
-colo_cached_names = {}
-active_raids = {}
-raid_info = {}
-emoji_aliases={}
-base_emoji_map={}
-emoji_map={}
-tracker = None
+token = os.environ['SINOALICE_TOKEN'] 	# Token is taken from computer's env for security
+command_prefix = '' 			# Prefix for commands
+description = 'SINoWhite Bot' 		# The bot description shown when invoking the help command
+trackedEvents = {}			# A list of event types that are tracked. each entity defines a set of start time
+locked_roles = []			# List of locked roles that the bot should not be able to assign role to
+colo_cached_names = {}			# A cache for colo names, as searching up user names is slow
+active_raids = {}			# Stores a list of active raids
+raid_info = {}				# Contains raid information such as name, time slots etc.
+emoji_aliases={}			# Aliases for all the emojis that can be invoked by the emoji command
+base_emoji_map={}			# Stores the basic set of emoji mappings to their image files (aliases not included)
+emoji_map={}				# Stores mapping just like base_emoji_map but includes aliases
+notify_list_exp=[]			# Stores a list of channels to notify for exp messages
+notify_list_raid=[]			# Stores a list of channels to notify for raid messages
+notify_list_daily_mission=[]		# Stores a list of channels to notify for daily missions
+tracker = None				# Event tracker. Starts uninitialized until bot has fully run up. See LoadTracker()
+enable_debug = False			# flag to enable/disable certain messages from showing up in log
 ##############
 
 ##############
@@ -50,6 +54,7 @@ daily_tasks = {}
 #TeaParty Channels
 bot_test_channel = ''
 lobby_channel = ''
+wolfie_channel = ''
 ##############
 
 ##############
@@ -67,6 +72,7 @@ def load_config():
         global command_prefix
         global bot_test_channel
         global lobby_channel
+        global wolfie_channel
         global trackedEvents
         global locked_roles
         global active_raids
@@ -74,6 +80,10 @@ def load_config():
         global emoji_aliases
         global base_emoji_map
         global emoji_map
+        global notify_list_exp
+        global notify_list_raid
+        global notify_list_daily_mission
+        global enable_debug
         
         config = json.load(f)
         print ('------')
@@ -87,6 +97,9 @@ def load_config():
 
         lobby_channel = config['lobby_channel']
         print ('lobby_channel:', lobby_channel)
+
+        wolfie_channel = config['wolfie_channel']
+        print ('wolfie_channel:', wolfie_channel)
         
         if 'trackedEvents' in config:
             for eventName, timeLst in config['trackedEvents'].items():
@@ -128,7 +141,35 @@ def load_config():
                 for alias in aliases:
                     emoji_map[alias] = emoji_map[emoji]
 
-        print ('emoji_map: ' + ', '.join('{}'.format(emoji_key) for emoji_key in emoji_map.keys()))
+            print ('emoji_map: ' + ', '.join('{}'.format(emoji_key) for emoji_key in emoji_map.keys()))
+
+        if 'notify_list_exp' in config:
+            notify_list_exp = config['notify_list_exp']
+            print ('notify_list_exp: ' + ', '.join('{}'.format(channel_id) for channel_id in notify_list_exp))
+        else:
+            print ('INFO: No notify_list_exp in config.')
+            print ('WARNING: No messages will be sent for exp messages.')
+
+        if 'notify_list_raid' in config:
+            notify_list_raid = config['notify_list_raid']
+            print ('notify_list_raid: ' + ', '.join('{}'.format(channel_id) for channel_id in notify_list_raid))
+        else:
+            print ('INFO: No notify_list_raid in config.')
+            print ('WARNING: No messages will be sent for raid messages.')
+
+        if 'notify_list_daily_mission' in config:
+            notify_list_daily_mission = config['notify_list_daily_mission']
+            print ('notify_list_daily_mission: ' + ', '.join('{}'.format(channel_id) for channel_id in notify_list_daily_mission))
+        else:
+            print ('INFO: No notify_list_daily_mission in config.')
+            print ('WARNING: No messages will be sent for daily mission messages.')
+
+        if 'enable_debug' in config:
+            enable_debug = config['enable_debug']
+        if enable_debug is True:
+            print ('INFO: DEBUG messages are turned ON')
+        else:
+            print ('INFO: DEBUG messages are turned OFF')
 
 def load_cogs():
     print('------')
@@ -163,12 +204,16 @@ def getDump():
     return json.dumps({'command_prefix':command_prefix,
                        'bot_test_channel':bot_test_channel,
                        'lobby_channel':lobby_channel,
+                       'wolfie_channel':wolfie_channel,
                        'trackedEvents':trackedEvents,
                        'locked_roles':locked_roles,
                        'active_raids':active_raids,
                        'raid_info':raid_info,
                        'emoji':base_emoji_map,
-                       'emoji_alias':emoji_aliases}, sort_keys=True, indent=4, cls=tu.TodEncoder)
+                       'emoji_alias':emoji_aliases,
+                       'notify_list_daily_mission':notify_list_daily_mission,
+                       'notify_list_raid':notify_list_raid,
+                       'notify_list_exp':notify_list_exp}, sort_keys=True, indent=4, cls=tu.TodEncoder)
 
 async def updateConf():
     dump = getDump()
@@ -189,7 +234,9 @@ async def doBackup():
         f.close()
 
     time_stamp = tu.time_now()
-    print (time_stamp + " DEV Backup Performed\nDump:", dump)
+    print (time_stamp + " DEV Backup Performed")
+    if enable_debug is True:
+        print (time_stamp + " DEBUG:\nDump:", dump)
 
 async def useBackup():
     if not os.path.isfile(config_filepath+'.bak'):
@@ -370,7 +417,11 @@ async def notifymsg(channel_id, msg, caller_func_name, delete=True, useEmbed=Tru
             sent_msg = None
 
 async def dailyexpmsg():
-    await notifymsg(lobby_channel, 'Daily EXP dungeons are up!', 'DAILY_EXP_TASK')
+    for channel_id in notify_list_exp:
+        await notifymsg(channel_id, 'Daily EXP dungeons are up!', 'DAILY_EXP_TASK')
+        
+	#await notifymsg(lobby_channel, 'Daily EXP dungeons are up!', 'DAILY_EXP_TASK')
+	#await notifymsg(wolfie_channel, 'Daily EXP dungeons are up!', 'DAILY_EXP_TASK')
 
 async def dailyexptask():
     if tracker.hasEvent('exp'):
@@ -384,18 +435,29 @@ async def dailyexptask():
 async def raidmsg(*args, **kwargs):
     raidname = ''
     raidlogmsg = '_MISSING_ARGUEMENT_'
-    print ("arg[0]:", args[0])
-    print ("kwords:", args[1]) # To remove later, DEBUG only
+	
+    # For DEBUG only
+    #print ("arg[0]:", args[0])
+    #print ("kwords:", args[1])
+	
     kwords = args[1] #args and kwargs are stored as a pair for some reason, so args[1] contains the kwargs
     if 'raidname' in kwords:
         raidname = kwords['raidname']
     if 'raidlogmsg' in kwords:
         raidlogmsg = kwords['raidlogmsg']+'_RAID_MSG'
-        
-    await notifymsg(lobby_channel, raidname + ' Raid is up!', raidlogmsg)
+
+    for channel_id in notify_list_raid:
+        await notifymsg(channel_id, raidname + ' Raid is up!', raidlogmsg)
+		
+    #await notifymsg(lobby_channel, raidname + ' Raid is up!', raidlogmsg)
+    #await notifymsg(wolfie_channel, raidname + 'Raid is up!', raidlogmsg)
 
 async def completedailymsg():
-    await notifymsg(lobby_channel, 'Remember to claim your daily cleaning ticket!', 'completedailymsg()', delete=False, useEmbed=True)
+    for channel_id in notify_list_daily_mission:
+        await notifymsg(channel_id, 'Remember to claim your daily cleaning ticket!', 'completedailymsg()', delete=False, useEmbed=True)
+
+    #await notifymsg(lobby_channel, 'Remember to claim your daily cleaning ticket!', 'completedailymsg()', delete=False, useEmbed=True)
+    #await notifymsg(wolfie_channel, 'Remember to claim your daily cleaning ticket!', 'completedailymsg()', delete=False, useEmbed=True)
     await reset_participation()
     
 async def completedailytask():
@@ -860,6 +922,12 @@ async def on_ready():
         print('------')
         
         firstBoot = False
+    else:
+        print('Reconnected to discord at ' + tu.time_now())
+    
+    print ('Connected to the following servers:')
+    for server in bot.server:
+        print (server.owner.name + '('+server.owner.id+')', server.name + '('+server.id+')', server.region)
 
 @bot.event
 async def on_error(event, *args, **kwargs):
