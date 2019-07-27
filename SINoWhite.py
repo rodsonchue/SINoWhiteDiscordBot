@@ -266,31 +266,31 @@ async def __useBackup():
     await asyncio.sleep(5)
     await bot.delete_message(sent_msg)
 
-async def reset_participation():
-    # Resets everyone's attendance, assume not indicated
-
-    conn = getDatabaseConn(database_url)
-    cur = conn.cursor()
-    cur.execute('UPDATE public.colo_status SET status = 0')
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    time_stamp = tu.time_now()
-    print (time_stamp + " DEV Reset Colo Participation")
-
-    await doBackup()
-
-@bot.command(description='Resets all colo participation status', hidden=True)
-async def __resetcolo():
-    await reset_participation()
-
-    sent_msg =  await bot.say('Colo Participation Reset')
-    time_stamp = tu.time_now()
-
-    #Delete msg after 5s
-    await asyncio.sleep(5)
-    await bot.delete_message(sent_msg)
+##async def reset_participation():
+##    # Resets everyone's attendance, assume not indicated
+##
+##    conn = getDatabaseConn(database_url)
+##    cur = conn.cursor()
+##    cur.execute('UPDATE public.colo_status SET status = 0')
+##    conn.commit()
+##    cur.close()
+##    conn.close()
+##
+##    time_stamp = tu.time_now()
+##    print (time_stamp + " DEV Reset Colo Participation")
+##
+##    await doBackup()
+##
+##@bot.command(description='Resets all colo participation status', hidden=True)
+##async def __resetcolo():
+##    await reset_participation()
+##
+##    sent_msg =  await bot.say('Colo Participation Reset')
+##    time_stamp = tu.time_now()
+##
+##    #Delete msg after 5s
+##    await asyncio.sleep(5)
+##    await bot.delete_message(sent_msg)
     
 
 @bot.command(description='Clears the cache for user nicknames', hidden=True)
@@ -432,6 +432,25 @@ async def dailyexptask():
     else:
         print (tu.time_now() + " ERROR Unable to schedule DAILY_EXP_TASK as exp is missing from tracker")
 
+async def dailycolo_travelermsg():
+    for server in bot.servers:
+        #599433741001293945 = Traveler's Refuge
+        if server.id == "599433741001293945":
+            for role in server.roles:
+                if role.id == "603603793472651274": #Admin
+                #if role.id == "603400327412187146": #Guildies
+                    #await notifymsg(599434072292458506, role.mention + " time for colosseum", 'TRAVELER_COLO_TASK', useEmbed=False) #Colosseum
+                    await notifymsg("603766502100959252", role.mention + " test message for colosseum", 'TRAVELER_COLO_TASK', useEmbed=False) #bot
+
+async def dailycolo_travelertask():
+    task = dt.DailyTask(dailycolo_travelermsg, "TRAVELER_COLO_TASK @ 23:00 JST", tu.TimeOfDay(14, 0))
+    await task.start()
+
+async def dailycolo_travelertesttask():
+    task = dt.DailyTask(dailycolo_travelermsg, "TRAVELER_COLO_TASK_TEST @ 00:00 JST", tu.TimeOfDay(15, 3))
+    await task.start()
+
+
 async def raidmsg(*args, **kwargs):
     raidname = ''
     raidlogmsg = '_MISSING_ARGUEMENT_'
@@ -563,144 +582,144 @@ async def rolelist(ctx):
 
     await bot.say("Roles: " + ', '.join(role_names))
 
-@bot.command(pass_context=True)
-async def join(ctx):
-    """
-    Indicate that you are participating in the colosseum for the day
-    """
-    userid = ctx.message.author.id
-    
-    server = discord.utils.find(lambda s: s.id == '342171098168688640', bot.servers)
-    if server:
-        member = discord.utils.find(lambda m: m.id == userid, server.members)
-        if member:
-            alias = member.name
-            if member.nick is not None:
-                alias = member.nick
-
-            conn = getDatabaseConn(database_url)
-            cur = conn.cursor()
-            cur.execute('SELECT COUNT(*) FROM public.colo_status WHERE userid = %s', (member.id,))
-            result = cur.fetchone()
-            if result[0] > 0:
-                #Existing entry
-                cur.execute('UPDATE public.colo_status SET status = %s WHERE userid = %s', (1, member.id))
-            else:
-                #Create new entry
-                cur.execute('INSERT INTO public.colo_status (status, userid) VALUES (%s, %s)', (1, member.id))
-
-            conn.commit()
-            cur.close()
-            conn.close()
-            
-            await bot.say(alias + " is joining us for colo today")
-            
-            time_stamp = tu.time_now()
-            print (time_stamp + " INFO User " + alias + " colo_join = True")
-            return
-
-    await bot.say('An unknown error has occured.')
-
-@bot.command(pass_context=True, aliases=['cmi'])
-async def unjoin(ctx):
-    """
-    Indicate that you are not participating in the colosseum for the day
-    """
-    userid = ctx.message.author.id
-    
-    server = discord.utils.find(lambda s: s.id == '342171098168688640', bot.servers)
-    if server:
-        member = discord.utils.find(lambda m: m.id == userid, server.members)
-        if member:
-            alias = member.name
-            if member.nick is not None:
-                alias = member.nick
-                
-            conn = getDatabaseConn(database_url)
-            cur = conn.cursor()
-            cur.execute('SELECT COUNT(*) FROM public.colo_status WHERE userid = %s', (member.id,))
-            result = cur.fetchone()
-            if result[0] > 0:
-                #Existing entry
-                cur.execute('UPDATE public.colo_status SET status = %s WHERE userid = %s', (-1, member.id))
-            else:
-                #Create new entry
-                cur.execute('INSERT INTO public.colo_status (status, userid) VALUES (%s, %s)', (-1, member.id))
-
-            conn.commit()
-            cur.close()
-            conn.close()
-            
-            await bot.say(alias + " is **not** joining us for colo today")
-            
-            time_stamp = tu.time_now()
-            print (time_stamp + " INFO User " + alias + " colo_join = False")
-            return
-
-    await bot.say('An unknown error has occured.')
-
-async def getAlias(userid):
-    time_stamp = tu.time_now()
-    alias = None
-    if userid in colo_cached_names:
-        alias = colo_cached_names[userid]
-    else:
-        server = discord.utils.find(lambda s: s.id == '342171098168688640', bot.servers)
-        if server:
-            member = discord.utils.find(lambda m: m.id == userid, server.members)
-            if member:
-                alias = member.name
-                if member.nick is not None:
-                    alias = member.nick
-            else:
-                print (time_stamp + 'ERROR Member with id ' + userid + ' not found in server')
-        else:
-            print (time_stamp + 'ERROR Cannot find server with id 342171098168688640')
-
-        # Alternate search method, is slower but just incase the above fails
-        if alias is None:
-            member = await bot.get_user_info(userid)
-            alias = member.name
-
-        colo_cached_names[userid] = alias
-
-    return alias
-
-@bot.command(pass_context=True)
-async def colo(ctx):
-    participants = []
-    nonParticipants = []
-    notIndicated = []
-
-    #test
-    conn = getDatabaseConn(database_url)
-    cur = conn.cursor()
-    
-    cur.execute('SELECT userid FROM public.colo_status WHERE status > 0')
-    result = cur.fetchall()
-    for userid in result:
-        alias = await getAlias(userid[0])
-        participants.append(alias)
-        
-    cur.execute('SELECT userid FROM public.colo_status WHERE status < 0')
-    result = cur.fetchall()
-    for userid in result:
-        alias = await getAlias(userid[0])
-        nonParticipants.append(alias)
-
-    cur.execute('SELECT userid FROM public.colo_status WHERE status = 0')
-    result = cur.fetchall()
-    for userid in result:
-        alias = await getAlias(userid[0])
-        notIndicated.append(alias)
-        
-    cur.close()
-    conn.close()
-
-    await bot.say("Participating: " + str(len(participants)) + '\n\t' + ", ".join(participants) +'\n\n' +\
-                  "Not Participating: " + str(len(nonParticipants)) + '\n\t' + ", ".join(nonParticipants) +'\n\n' +\
-                  "No Indication: " + str(len(notIndicated)) + '\n\t' + ", ".join(notIndicated))
-    return
+##@bot.command(pass_context=True)
+##async def join(ctx):
+##    """
+##    Indicate that you are participating in the colosseum for the day
+##    """
+##    userid = ctx.message.author.id
+##    
+##    server = discord.utils.find(lambda s: s.id == '342171098168688640', bot.servers)
+##    if server:
+##        member = discord.utils.find(lambda m: m.id == userid, server.members)
+##        if member:
+##            alias = member.name
+##            if member.nick is not None:
+##                alias = member.nick
+##
+##            conn = getDatabaseConn(database_url)
+##            cur = conn.cursor()
+##            cur.execute('SELECT COUNT(*) FROM public.colo_status WHERE userid = %s', (member.id,))
+##            result = cur.fetchone()
+##            if result[0] > 0:
+##                #Existing entry
+##                cur.execute('UPDATE public.colo_status SET status = %s WHERE userid = %s', (1, member.id))
+##            else:
+##                #Create new entry
+##                cur.execute('INSERT INTO public.colo_status (status, userid) VALUES (%s, %s)', (1, member.id))
+##
+##            conn.commit()
+##            cur.close()
+##            conn.close()
+##            
+##            await bot.say(alias + " is joining us for colo today")
+##            
+##            time_stamp = tu.time_now()
+##            print (time_stamp + " INFO User " + alias + " colo_join = True")
+##            return
+##
+##    await bot.say('An unknown error has occured.')
+##
+##@bot.command(pass_context=True, aliases=['cmi'])
+##async def unjoin(ctx):
+##    """
+##    Indicate that you are not participating in the colosseum for the day
+##    """
+##    userid = ctx.message.author.id
+##    
+##    server = discord.utils.find(lambda s: s.id == '342171098168688640', bot.servers)
+##    if server:
+##        member = discord.utils.find(lambda m: m.id == userid, server.members)
+##        if member:
+##            alias = member.name
+##            if member.nick is not None:
+##                alias = member.nick
+##                
+##            conn = getDatabaseConn(database_url)
+##            cur = conn.cursor()
+##            cur.execute('SELECT COUNT(*) FROM public.colo_status WHERE userid = %s', (member.id,))
+##            result = cur.fetchone()
+##            if result[0] > 0:
+##                #Existing entry
+##                cur.execute('UPDATE public.colo_status SET status = %s WHERE userid = %s', (-1, member.id))
+##            else:
+##                #Create new entry
+##                cur.execute('INSERT INTO public.colo_status (status, userid) VALUES (%s, %s)', (-1, member.id))
+##
+##            conn.commit()
+##            cur.close()
+##            conn.close()
+##            
+##            await bot.say(alias + " is **not** joining us for colo today")
+##            
+##            time_stamp = tu.time_now()
+##            print (time_stamp + " INFO User " + alias + " colo_join = False")
+##            return
+##
+##    await bot.say('An unknown error has occured.')
+##
+##async def getAlias(userid):
+##    time_stamp = tu.time_now()
+##    alias = None
+##    if userid in colo_cached_names:
+##        alias = colo_cached_names[userid]
+##    else:
+##        server = discord.utils.find(lambda s: s.id == '342171098168688640', bot.servers)
+##        if server:
+##            member = discord.utils.find(lambda m: m.id == userid, server.members)
+##            if member:
+##                alias = member.name
+##                if member.nick is not None:
+##                    alias = member.nick
+##            else:
+##                print (time_stamp + 'ERROR Member with id ' + userid + ' not found in server')
+##        else:
+##            print (time_stamp + 'ERROR Cannot find server with id 342171098168688640')
+##
+##        # Alternate search method, is slower but just incase the above fails
+##        if alias is None:
+##            member = await bot.get_user_info(userid)
+##            alias = member.name
+##
+##        colo_cached_names[userid] = alias
+##
+##    return alias
+##
+##@bot.command(pass_context=True)
+##async def colo(ctx):
+##    participants = []
+##    nonParticipants = []
+##    notIndicated = []
+##
+##    #test
+##    conn = getDatabaseConn(database_url)
+##    cur = conn.cursor()
+##    
+##    cur.execute('SELECT userid FROM public.colo_status WHERE status > 0')
+##    result = cur.fetchall()
+##    for userid in result:
+##        alias = await getAlias(userid[0])
+##        participants.append(alias)
+##        
+##    cur.execute('SELECT userid FROM public.colo_status WHERE status < 0')
+##    result = cur.fetchall()
+##    for userid in result:
+##        alias = await getAlias(userid[0])
+##        nonParticipants.append(alias)
+##
+##    cur.execute('SELECT userid FROM public.colo_status WHERE status = 0')
+##    result = cur.fetchall()
+##    for userid in result:
+##        alias = await getAlias(userid[0])
+##        notIndicated.append(alias)
+##        
+##    cur.close()
+##    conn.close()
+##
+##    await bot.say("Participating: " + str(len(participants)) + '\n\t' + ", ".join(participants) +'\n\n' +\
+##                  "Not Participating: " + str(len(nonParticipants)) + '\n\t' + ", ".join(nonParticipants) +'\n\n' +\
+##                  "No Indication: " + str(len(notIndicated)) + '\n\t' + ", ".join(notIndicated))
+##    return
 
 #########################################################################################
 #Jisho module
@@ -910,6 +929,8 @@ async def on_ready():
         #Active
         await dailyexptask()
         await completedailytask()
+        #await dailycolo_travelertesttask()
+        await dailycolo_travelertask()
         #await raidtask("crystalwispmsg", crystalwispmsg)
         #await raidtask("Crystal Wisp", raidmsg, raidname="Crystal Wisp")
         await schedule_raids()
@@ -926,7 +947,7 @@ async def on_ready():
         print('Reconnected to discord at ' + tu.time_now())
     
     print ('Connected to the following servers:')
-    for server in bot.server:
+    for server in bot.servers:
         print (server.owner.name + '('+server.owner.id+')', server.name + '('+server.id+')', server.region)
 
 @bot.event
